@@ -137,12 +137,13 @@ body{
 .is-deck .deck__card{animation:cardIn .65s cubic-bezier(.2,.8,.2,1) both}
 .deck__card.flip{animation:cardFlip .55s cubic-bezier(.2,.8,.2,1) both}
 .deck__bar{display:flex;gap:6px;margin-bottom:18px}
+.deck__bar.is-long{gap:3px}
 .deck__bar i{flex:1;height:3px;border-radius:3px;background:rgba(253,233,180,.2);overflow:hidden}
 .deck__bar i::after{content:"";display:block;height:100%;width:calc(var(--p,0) * 100%);border-radius:3px;background:var(--amber)}
-.deck__slide{display:grid;grid-template-columns:auto 1fr;gap:14px 20px;align-items:center;min-height:176px}
+.deck__slide{display:grid;grid-template-columns:auto 1fr;gap:14px 20px;align-items:center;align-content:center;min-height:176px}
 .deck__crew{grid-column:1 / -1;display:flex;gap:10px}
-.deck__slide:not(.is-group) .deck__crew,.deck__slide.is-group .ava--big{display:none}
-.deck__slide.is-group .deck__id{grid-column:1 / -1}
+.deck__slide:not(.is-group) .deck__crew,.deck__slide:not(.is-person) .ava--big,.deck [hidden]{display:none}
+.deck__slide:not(.is-person) .deck__id{grid-column:1 / -1}
 .ava{
   position:relative;flex:none;width:58px;aspect-ratio:1;border-radius:50%;
   background:#2a140c var(--team-img) calc(var(--k) * 25%) 0 / 500% auto no-repeat;
@@ -159,7 +160,20 @@ body{
 .deck__tag{margin:0;font:600 .72rem/1.2 var(--font-ui);letter-spacing:.14em;text-transform:uppercase;color:var(--amber)}
 .deck__name{margin:8px 0 0;font:400 1.02rem/1.3 var(--font-display);letter-spacing:.02em;text-transform:uppercase;color:var(--gold);text-wrap:balance}
 .deck__role{margin:8px 0 0;font:600 1rem/1.3 var(--font-ui);color:var(--gold-light)}
-.deck__txt{grid-column:1 / -1;margin:0;min-height:2.9em;font:500 .95rem/1.45 var(--font-ui);color:rgba(253,233,180,.8)}
+.deck__txt{grid-column:1 / -1;margin:0;font:500 .95rem/1.45 var(--font-ui);color:rgba(253,233,180,.8)}
+.is-person .deck__txt{min-height:2.9em}
+.deck__stats{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:10px}
+.stat{flex:1 1 96px;padding:12px 14px;border:1px solid rgba(253,233,180,.22);border-radius:14px;background:rgba(253,233,180,.06)}
+.stat b{display:block;font:400 1.02rem/1.25 var(--font-display);letter-spacing:.02em;text-transform:uppercase;color:var(--gold)}
+.stat span{display:block;margin-top:4px;font:500 .8rem/1.3 var(--font-ui);color:rgba(253,233,180,.74)}
+.deck__list{grid-column:1 / -1;display:grid;gap:9px;margin:0;padding:0;list-style:none;font:500 .93rem/1.4 var(--font-ui);color:rgba(253,233,180,.86)}
+.deck__list li{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start}
+.deck__list b{display:grid;place-items:center;width:22px;height:22px;margin-top:-1px;border-radius:50%;font:600 .74rem/1 var(--font-ui);color:var(--ink);background:var(--amber)}
+.deck__list b:empty{width:8px;height:8px;margin:7px 7px 0}
+.deck__list strong{font-weight:600;color:#fff3cf}
+.deck__list.is-tags{display:flex;flex-wrap:wrap;gap:7px}
+.deck__list.is-tags li{display:block;padding:.42em .85em;border:1px solid rgba(253,233,180,.26);border-radius:999px;background:rgba(253,233,180,.06)}
+.deck__list.is-tags b{display:none}
 .deck__nav{display:flex;align-items:center;gap:8px;margin-top:12px}
 .deck__btn{
   display:grid;place-items:center;width:34px;height:34px;padding:0;
@@ -180,6 +194,7 @@ body{
 .deck__slide.go .deck__name{animation:wipe .6s cubic-bezier(.2,.7,.2,1) .2s both}
 .deck__slide.go .deck__role{animation:rise .5s ease .34s both}
 .deck__slide.go .deck__txt{animation:rise .5s ease .46s both}
+.deck__slide.go .stat,.deck__slide.go .deck__list li{animation:rise .5s ease both;animation-delay:calc(.3s + var(--i) * 80ms)}
 @keyframes cardIn{from{opacity:0;transform:perspective(900px) translateX(60px) rotateY(-18deg)}to{opacity:1;transform:none}}
 @keyframes cardFlip{from{transform:perspective(900px) translateX(14px) rotateY(-10deg);filter:brightness(1.35)}to{transform:none;filter:none}}
 @keyframes avaIn{from{opacity:0;transform:scale(.4) rotate(-14deg)}to{opacity:1;transform:none}}
@@ -193,10 +208,13 @@ body{
 .is-narrow .deck__slide{min-height:132px;gap:8px 14px}
 .is-narrow .ava{width:46px}
 .is-narrow .ava--big{width:84px}
-.is-narrow .deck__txt{min-height:2.7em;font-size:.86rem;line-height:1.35}
+.is-narrow .deck__txt{font-size:.86rem;line-height:1.35}
+.is-narrow .is-person .deck__txt{min-height:2.7em}
+.is-narrow .deck__list{gap:6px;font-size:.86rem}
+.is-narrow .stat{padding:9px 11px}
 .is-narrow .deck__nav{margin-top:8px}
 .is-narrow.is-deck .bubble{display:none}
-.is-narrow.is-deck .hint,.is-narrow.is-deck .chip[data-act]:not(.is-active){display:none}
+.is-narrow.is-deck .hint,.is-narrow.is-deck .chips--play{display:none}
 
 /* ---------- Commandes ---------- */
 .dock{
@@ -204,7 +222,20 @@ body{
   display:flex;flex-direction:column;align-items:center;gap:10px;
   padding:0 16px;
 }
-.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:100%}
+.chips--play .chip{font-size:.82rem;padding:.62em 1em}
+.chip--go{border-color:var(--amber);box-shadow:0 0 18px rgba(255,154,31,.3)}
+.is-narrow .dock{align-items:stretch}
+.is-narrow .chips{
+  flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;
+  margin-inline:-16px;padding:5px 16px;max-width:none;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 16px,#000 calc(100% - 16px),transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 16px,#000 calc(100% - 16px),transparent);
+}
+.is-narrow .chips::-webkit-scrollbar{display:none}
+.is-narrow .chip{flex:none}
+.is-narrow .hint{align-self:center}
 .chip{
   font:600 .92rem/1 var(--font-ui);
   padding:.74em 1.15em;
@@ -550,9 +581,9 @@ body{
     </g>
   </svg>
 
-  <section class="deck" id="deck" aria-label="Présentation de l’équipage">
+  <section class="deck" id="deck" aria-label="Fiches présentées par la mascotte">
     <div class="deck__card" id="deck-card">
-      <div class="deck__bar" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="deck__bar" id="deck-bar" aria-hidden="true"></div>
       <div class="deck__slide is-group" id="deck-slide">
         <div class="deck__crew" aria-hidden="true">
           <span class="ava" style="--k:0"></span><span class="ava" style="--k:1"></span><span class="ava" style="--k:2"></span><span class="ava" style="--k:3"></span><span class="ava" style="--k:4"></span>
@@ -563,6 +594,8 @@ body{
           <h2 class="deck__name" id="deck-name"></h2>
           <p class="deck__role" id="deck-role"></p>
         </div>
+        <div class="deck__stats" id="deck-stats"></div>
+        <ul class="deck__list" id="deck-list"></ul>
         <p class="deck__txt" id="deck-txt"></p>
       </div>
       <div class="deck__nav">
@@ -582,9 +615,17 @@ body{
   <a class="chip chip-home" href="./">Retour au site</a>
 
   <div class="dock" id="dock">
-    <div class="chips" role="group" aria-label="Actions de la mascotte">
+    <div class="chips chips--main" role="group" aria-label="Sujets présentés par la mascotte">
+      <button class="chip chip--go" type="button" data-act="tour">Visite guidée</button>
+      <button class="chip" type="button" data-act="mission">Mission</button>
+      <button class="chip" type="button" data-act="rover">Rover</button>
+      <button class="chip" type="button" data-act="methode">Méthode</button>
+      <button class="chip" type="button" data-act="team">Équipage</button>
+      <button class="chip" type="button" data-act="challenge">Challenge</button>
+      <button class="chip" type="button" data-act="partenaires">Partenaires</button>
+    </div>
+    <div class="chips chips--play" role="group" aria-label="Jouer avec la mascotte">
       <button class="chip" type="button" data-act="present">Se présenter</button>
-      <button class="chip" type="button" data-act="team">L’équipage</button>
       <button class="chip" type="button" data-act="wave">Coucou</button>
       <button class="chip" type="button" data-act="hearts">Cœurs</button>
       <button class="chip" type="button" data-act="dance">Danser</button>
@@ -594,7 +635,7 @@ body{
       <button class="chip chip-quiet" type="button" id="btn-sound">Couper le son</button>
       <button class="chip chip-quiet" type="button" id="btn-voice" hidden>Changer de voix</button>
     </div>
-    <p class="hint">Touchez le robot pour un pouce levé. Caressez son casque pour le faire rougir.</p>
+    <p class="hint">Choisissez un sujet : la mascotte vous le présente. Touchez-la pour un pouce levé.</p>
   </div>
 </main>
 
@@ -635,6 +676,77 @@ body{
   const EQUIPE_DEBUT = 'Je vous présente l’équipage ARRAKOR ! Cinq spécialités, une obsession.';
   const EQUIPE_FIN = 'Une équipe, un robot, une seule mission. Pouce levé pour l’équipage !';
 
+  /* Ce que la mascotte présente : une suite de fiches par sujet. « dit » est la phrase qu'elle prononce.
+     Une fiche peut porter des chiffres (stats), une liste (liste, numérotée avec num, en étiquettes avec puces),
+     un texte (txt), un portrait (k = rang dans equipe.jpg) ou les cinq portraits (crew). */
+  const SUJETS = {
+    mission: [
+      { tag: 'Notre mission', titre: 'Un parcours réussi', liste: ['Sans collision', 'Sans blocage'],
+        dit: 'Notre mission : un parcours réussi, sans collision et sans blocage.' },
+      { tag: 'Notre mission', titre: 'Trois exigences',
+        liste: ['Vitesse maîtrisée : jamais plus vite que ce que le rover sait contrôler.',
+          'Précision : suivre la trajectoire prévue, au plus près.',
+          'Fiabilité : le même résultat, essai après essai.'],
+        dit: 'Pour y arriver, trois exigences : une vitesse maîtrisée, de la précision, et de la fiabilité, essai après essai.' }
+    ],
+    rover: [
+      { tag: 'Le rover', titre: 'Six appuis. Zéro compromis.', stats: [['6', 'roues'], ['Noir et or', 'livrée'], ['LED ambre', 'signature']],
+        dit: 'Voici le rover : six roues, une livrée noir et or, et une lueur ambre pour signature.' },
+      { tag: 'Le rover', titre: 'Il scanne. Il comprend. Il décide.',
+        txt: 'Lire le terrain, choisir sa trajectoire et la tenir jusqu’à l’arrivée, sans toucher un obstacle et sans jamais rester bloqué.',
+        dit: 'Son travail : lire le terrain, choisir sa trajectoire, et la tenir jusqu’à l’arrivée, sans toucher un obstacle.' }
+    ],
+    methode: [
+      { tag: 'Notre méthode', titre: 'Quatre étapes, dans cet ordre', num: true,
+        liste: ['Les exigences : comprendre le cahier des charges avant de construire.',
+          'Les premiers essais : essayer vite pour détecter les problèmes tôt.',
+          'L’AMDEC : chaque défaillance possible est analysée.',
+          'Le code : finalisé, réglé et validé avant la finale.'],
+        dit: 'Notre méthode tient en quatre étapes : les exigences, les premiers essais, l’AMDEC, puis le code.' },
+      { tag: 'Notre méthode', titre: 'Pas de hasard', stats: [['90 %', 'de réussite aux essais, au moins']],
+        dit: 'Notre objectif : au moins 90 % de réussite aux essais. Pas de hasard, de la méthode.' }
+    ],
+    team: [
+      { crew: true, tag: 'Game of Robots 2026', titre: 'L’équipage', sous: 'Cinq spécialités, une obsession.', dit: EQUIPE_DEBUT },
+      ...EQUIPE.map((m, k) => ({ k, tag: m.pole, titre: m.nom, sous: m.role, txt: m.txt, dit: m.dit })),
+      { tag: 'L’équipage', titre: 'Ce que nous savons faire',
+        liste: ['Concevoir : mécanique, conception et robotique.',
+          'Modéliser : SCADE, machines à états, simulation et validation.',
+          'Valider : plans de tests, AMDEC, qualité.',
+          'Industrialiser : passer du prototype à un système fiable.',
+          'Piloter : gestion de projet agile, planification et suivi.'],
+        dit: 'Ensemble, nous savons concevoir, modéliser, valider, industrialiser et piloter : de l’exigence au robot qui roule.' },
+      { crew: true, fin: true, tag: 'ARRAKOR', titre: 'L’équipage au complet', sous: 'Une équipe. Un robot. Une seule mission.', dit: EQUIPE_FIN }
+    ],
+    challenge: [
+      { tag: 'Le challenge', titre: '13 équipes. Une seule arène.', stats: [['14 – 18 déc.', '2026'], ['Polytech Angers', 'le lieu'], ['13', 'équipes en lice']],
+        dit: 'Le Game of Robots, c’est le challenge de robotique de Polytech Angers : treize équipes, une seule arène, du 14 au 18 décembre 2026.' },
+      { tag: 'Le challenge', titre: 'Une semaine pour tout faire',
+        txt: 'Chaque équipe conçoit et réalise son robot, puis les machines s’affrontent.',
+        liste: ['9 novembre : pitch de lancement', '14 décembre : début du challenge', '18 décembre : dernier jour'],
+        dit: 'En une semaine, chaque équipe conçoit et réalise son robot, puis les machines s’affrontent.' },
+      { tag: 'Le challenge', titre: 'Six disciplines à l’épreuve', puces: true,
+        liste: ['Ingénierie des exigences', 'Modélisation SCADE', 'Gestion de projet agile', 'Mécanique', 'Validation et essais', 'Marketing'],
+        dit: 'Six disciplines sont mises à l’épreuve : les exigences, la modélisation SCADE, la gestion de projet agile, la mécanique, les essais et le marketing.' }
+    ],
+    partenaires: [
+      { tag: 'Nos partenaires', titre: 'Merci de croire en nous',
+        liste: ['Ansys : l’éditeur de SCADE, l’outil qui modélise le comportement du robot.',
+          'ADDL : partenaire Ansys, ingénierie des exigences et simulation.',
+          'Onepoint : partenaire du challenge.',
+          'Thales : partenaire du challenge.',
+          'Polytech Angers : l’école d’ingénieurs qui organise le Game of Robots.'],
+        dit: 'Le challenge existe grâce à nos partenaires : Ansys, ADDL, Onepoint, Thales et Polytech Angers. Merci de croire en nous !' }
+    ]
+  };
+  /* La visite guidée enchaîne tous les sujets, sans leurs fiches de fin */
+  SUJETS.tour = [
+    { tag: 'Visite guidée', titre: 'ARRAKOR en deux minutes', sous: 'Équipe n°1 du Game of Robots 2026', dit: 'Suivez-moi, je vous fais visiter ARRAKOR !' },
+    ...['mission', 'rover', 'methode', 'team', 'challenge', 'partenaires'].flatMap(n => SUJETS[n].filter(f => !f.fin)),
+    { crew: true, fin: true, tag: 'ARRAKOR', titre: 'Nous ne venons pas participer.', sous: 'Nous venons gagner.',
+      dit: 'Voilà, vous savez tout. Nous ne venons pas participer : nous venons gagner !' }
+  ];
+
   /* ---------- Éléments ---------- */
   const $ = id => document.getElementById(id);
   const stage = $('stage'), svg = $('mascot'), robot = $('robot'), dock = $('dock');
@@ -645,7 +757,7 @@ body{
   const dk = {
     root: $('deck'), card: $('deck-card'), slide: $('deck-slide'), ava: $('deck-ava'),
     tag: $('deck-tag'), name: $('deck-name'), role: $('deck-role'), txt: $('deck-txt'), count: $('deck-count'),
-    bars: [...document.querySelectorAll('.deck__bar i')]
+    bar: $('deck-bar'), bars: [], stats: $('deck-stats'), list: $('deck-list')
   };
   const chips = [...document.querySelectorAll('.chip[data-act]')];
   const el = {
@@ -675,9 +787,9 @@ body{
   /* ---------- Repère : le dessin SVG fait 800 unités de large, sol à y = 772 ---------- */
   let W = 0, H = 0, S = 1, OX = 0, OY = 0;
   /* Pendant la présentation de l'équipage, tout le dessin glisse et rétrécit autour des pieds du robot */
-  const view = { k: 1, dx: 0, kT: 1, dxT: 0 };
+  const view = { k: 1, dx: 0, dy: 0, kT: 1, dxT: 0, dyT: 0 };
   const ux = x => OX + 400 * S + view.dx + (x - 400) * S * view.k;
-  const uy = y => OY + 772 * S + (y - 772) * S * view.k;
+  const uy = y => OY + 772 * S + view.dy + (y - 772) * S * view.k;
   const SS = () => Math.max(S, .5);
 
   /* ==========================================================================
@@ -760,7 +872,7 @@ body{
     if (synth.addEventListener) synth.addEventListener('voiceschanged', pickVoice);
   }
   /* Ce qui s'écrit d'une façon et se dit d'une autre. L'écrit ne change jamais : seule la voix est guidée. */
-  const DICTION = [[/ARRAKOR/gi, 'Aracor'], [/&/g, ' et ']];
+  const DICTION = [[/ARRAKOR/gi, 'Aracor'], [/ADDL/g, 'A D D L'], [/&/g, ' et ']];
   const spoken = text => DICTION.reduce((out, pair) => out.replace(pair[0], pair[1]), text);
   const hasVoice = () => sound.on && !!synth && !!sound.voice;
   const voiceBusy = () => {
@@ -865,8 +977,8 @@ body{
 
   function placeBubble() {
     /* on vise la place du robot au repos, ou celle qu'il prend pendant la présentation, jamais une position de transition */
-    const k = deckOpen ? view.kT : 1, dx = deckOpen ? view.dxT : 0;
-    const px = x => OX + 400 * S + dx + (x - 400) * S * k, py = y => OY + 772 * S + (y - 772) * S * k;
+    const k = deckOpen ? view.kT : 1, dx = deckOpen ? view.dxT : 0, dy = deckOpen ? view.dyT : 0;
+    const px = x => OX + 400 * S + dx + (x - 400) * S * k, py = y => OY + 772 * S + dy + (y - 772) * S * k;
     const sideLeft = px(604), room = W - sideLeft - 16;
     bubble.classList.remove('side', 'top');
     if (room >= 200 && !deckOpen) {
@@ -876,7 +988,7 @@ body{
       bubble.style.top = Math.max(12, py(118)) + 'px';
     } else {
       bubble.classList.add('top');
-      bubble.style.maxWidth = Math.min(300, W - 32) + 'px';
+      bubble.style.maxWidth = Math.min(deckOpen && !narrow ? Math.min(400, dk.root.offsetLeft - 48) : 300, W - 32) + 'px';
       const bw = bubble.offsetWidth, bh = bubble.offsetHeight;
       bubble.style.left = clamp(px(400) - bw / 2, 16, Math.max(16, W - 16 - bw)) + 'px';
       bubble.style.top = Math.max(12, py(8) - bh - 18) + 'px';
@@ -1141,35 +1253,69 @@ body{
 
   /* ---------- L'équipage : une fiche par membre, façon diaporama ---------- */
   function fitDeck() {                         /* où le robot se range pendant la présentation */
-    if (narrow) {
-      const room = OY + 772 * S - (dk.root.offsetTop + dk.root.offsetHeight) - 10;
-      view.kT = clamp(room / (756 * S), .3, .8); view.dxT = 0;
-    } else { view.kT = .86; view.dxT = -W * .22; }
+    const feet = OY + 772 * S;
+    if (narrow) {                              /* fiche au-dessus : le robot descend dans la place que libère la barre d'actions */
+      const floor = Math.max(feet, H - dock.offsetHeight - 34);
+      const room = floor - (dk.root.offsetTop + dk.root.offsetHeight) - 10;
+      view.kT = clamp(room / (756 * S), .3, .9); view.dxT = 0; view.dyT = deckOpen ? floor - feet : 0;
+    } else {                                   /* fiche à droite : le robot se décale et garde la place de sa bulle au-dessus de lui */
+      view.kT = clamp((feet - 150) / (764 * S), .6, .86); view.dxT = -W * .22; view.dyT = 0;
+    }
   }
-  function showSlide(i, a) {                   /* -1 : ouverture, 0 à 4 : un membre, 5 : final */
-    const m = EQUIPE[i], group = !m, first = i < 0;
+  function showSlide(fiches, i, a) {
+    const f = fiches[i], person = f.k !== undefined;
     deckOpen = true;
     stage.classList.add('is-deck');
+    if (dk.bars.length !== fiches.length) {    /* une barre de progression par fiche */
+      dk.bar.textContent = '';
+      dk.bars = fiches.map(() => dk.bar.appendChild(document.createElement('i')));
+      dk.bar.classList.toggle('is-long', fiches.length > 10);
+    }
     dk.slide.classList.remove('go'); dk.card.classList.remove('flip');
-    dk.slide.classList.toggle('is-group', group);
-    dk.tag.textContent = group ? (first ? 'Game of Robots 2026' : 'ARRAKOR') : m.pole;
-    dk.name.textContent = group ? (first ? 'L’équipage' : 'L’équipage au complet') : m.nom;
-    dk.role.textContent = group ? (first ? 'Cinq spécialités, une obsession.' : 'Une équipe. Un robot. Une seule mission.') : m.role;
-    dk.txt.textContent = group ? '' : m.txt;
-    dk.count.textContent = group ? '' : (i + 1) + ' / ' + EQUIPE.length;
-    if (!group) dk.ava.style.setProperty('--k', i);
-    dk.bars.forEach((b, k) => b.style.setProperty('--p', group ? (first ? 0 : 1) : (k < i ? 1 : 0)));
-    a.bar = group ? null : dk.bars[i];
-    a.sparkled = group;
+    dk.slide.classList.toggle('is-group', !!f.crew);
+    dk.slide.classList.toggle('is-person', person);
+    dk.tag.textContent = f.tag;
+    dk.name.textContent = f.titre;
+    dk.role.textContent = f.sous || ''; dk.role.hidden = !f.sous;
+    dk.txt.textContent = f.txt || ''; dk.txt.hidden = !f.txt;
+    if (person) dk.ava.style.setProperty('--k', f.k);
+
+    dk.stats.textContent = ''; dk.stats.hidden = !f.stats;
+    (f.stats || []).forEach((pair, n) => {
+      const box = document.createElement('div'), b = document.createElement('b'), label = document.createElement('span');
+      box.className = 'stat'; box.style.setProperty('--i', n);
+      b.textContent = pair[0]; label.textContent = pair[1];
+      box.append(b, label); dk.stats.appendChild(box);
+    });
+
+    dk.list.textContent = ''; dk.list.hidden = !f.liste;
+    dk.list.classList.toggle('is-tags', !!f.puces);
+    (f.liste || []).forEach((line, n) => {
+      const li = document.createElement('li'), b = document.createElement('b'), txt = document.createElement('span');
+      const at = f.puces ? -1 : line.indexOf(' : ');
+      li.style.setProperty('--i', n);
+      b.textContent = f.num ? n + 1 : '';
+      if (at > 0) {                             /* « Précision : … » : le mot-clé ressort */
+        const key = document.createElement('strong');
+        key.textContent = line.slice(0, at);
+        txt.append(key, line.slice(at));
+      } else txt.textContent = line;
+      li.append(b, txt); dk.list.appendChild(li);
+    });
+
+    dk.count.textContent = (i + 1) + ' / ' + fiches.length;
+    dk.bars.forEach((b, k) => b.style.setProperty('--p', k < i ? 1 : 0));
+    a.bar = dk.bars[i];
+    a.sparkled = !person;
     void dk.slide.offsetWidth;                 /* relance les animations d'arrivée */
     dk.slide.classList.add('go');
-    if (!first) dk.card.classList.add('flip');
+    if (i > 0) dk.card.classList.add('flip');
     fitDeck();
     sfx.pop();
   }
   function closeDeck() { deckOpen = false; stage.classList.remove('is-deck'); }
   function deckGo(dir) {
-    if (!act || act.name !== 'team') return;
+    if (!act || !act.def.deck) return;
     unlock();
     act.goto = clamp(act.i + dir, 0, act.def.steps.length);
   }
@@ -1182,8 +1328,8 @@ body{
         { vx: Math.cos(g) * v, vy: Math.sin(g) * v, size: rand(1.4, 3.2), max: rand(.5, .95) });
     }
   }
-  function buildTeam() {
-    const point = (T, x, a) => {               /* le robot montre la fiche */
+  function buildDeck(fiches) {
+    const point = (T, x, a) => {               /* la mascotte montre la fiche */
       T.deck = 1;
       hop(T, x, .05, .36, 14);
       if (narrow) { T.ra1 = -150; T.ra2 = -12; T.lookY -= 4; T.hy -= 2; }
@@ -1191,19 +1337,22 @@ body{
       T.rw = 0; T.ropen = 1;
       if (!a.sparkled && x > .32) { a.sparkled = true; sparkleAround(dk.ava); }
     };
-    const steps = [{ say: EQUIPE_DEBUT, enter(a) { showSlide(-1, a); }, pose: point }];
-    EQUIPE.forEach((m, i) => steps.push({ say: m.dit, enter(a) { showSlide(i, a); }, pose: point }));
-    steps.push({
-      say: EQUIPE_FIN,
-      enter(a) { showSlide(EQUIPE.length, a); burst(226, 330, 40, 320); haloBurst(24); sfx.chime(); },
-      pose(T, x) { T.deck = 1; hop(T, x, .1, .42, 26); T.eyeS = 1.12; T.halo = 1.6; if (within(x, 1, 1.4)) T.eyeR = .06; }
-    });
-    return scripted(steps, closeDeck);
+    const finale = (T, x) => {                 /* dernière fiche : pouce levé et clin d'œil */
+      T.deck = 1; hop(T, x, .1, .42, 26); T.eyeS = 1.12; T.halo = 1.6;
+      if (within(x, 1, 1.4)) T.eyeR = .06;
+    };
+    const def = scripted(fiches.map((f, i) => ({
+      say: f.dit,
+      enter(a) { showSlide(fiches, i, a); if (f.fin) { burst(226, 330, 40, 320); haloBurst(24); sfx.chime(); } },
+      pose: f.fin ? finale : point
+    })), closeDeck);
+    def.deck = true;
+    return def;
   }
 
   const ACTIONS = {
     present: buildPresent(),
-    team: buildTeam(),
+    ...Object.fromEntries(Object.keys(SUJETS).map(n => [n, buildDeck(SUJETS[n])])),
 
     cheer: {
       dur: 1.55, still: .5,
@@ -1344,6 +1493,10 @@ body{
     chips.forEach(c => {
       if (c === btnSleep) return;
       c.classList.toggle('is-active', c.dataset.act === name);
+      const rail = c.parentNode;
+      if (c.dataset.act !== name || rail.scrollWidth <= rail.clientWidth + 1) return;
+      const left = rail.scrollLeft + c.getBoundingClientRect().left - rail.getBoundingClientRect().left - (rail.clientWidth - c.offsetWidth) / 2;
+      rail.scrollTo({ left, behavior: calm ? 'auto' : 'smooth' });
     });
     const sleepy = asleep || name === 'yawn';
     btnSleep.setAttribute('aria-pressed', String(sleepy));
@@ -1456,8 +1609,8 @@ body{
   function apply() {
     const c = cur;
     const d = clamp(c.deck, 0, 1.05);
-    view.k = 1 + (view.kT - 1) * d; view.dx = view.dxT * d;
-    svg.style.transform = d > .002 ? `translate(${R(view.dx)}px,0) scale(${view.k.toFixed(4)})` : '';
+    view.k = 1 + (view.kT - 1) * d; view.dx = view.dxT * d; view.dy = view.dyT * d;
+    svg.style.transform = d > .002 ? `translate(${R(view.dx)}px,${R(view.dy)}px) scale(${view.k.toFixed(4)})` : '';
     const turn = Math.cos(spin);
     const flip = (turn < 0 ? -1 : 1) * Math.max(Math.abs(turn), .14);
     el.root.setAttribute('transform',
@@ -1626,7 +1779,7 @@ body{
   btnVoice.addEventListener('click', nextVoice);
   $('deck-prev').addEventListener('click', () => deckGo(-1));
   $('deck-next').addEventListener('click', () => deckGo(1));
-  $('deck-close').addEventListener('click', () => { if (act && act.name === 'team') act.done = true; });
+  $('deck-close').addEventListener('click', () => { if (act && act.def.deck) act.done = true; });
 
   window.addEventListener('keydown', e => {
     if (deckOpen && e.key === 'Escape') { if (act) act.done = true; return; }
@@ -1643,7 +1796,7 @@ body{
     const x = e.clientX - r.left, y = e.clientY - r.top, now = performance.now();
     ptr.tx = clamp((x / r.width - .5) * 2, -1, 1);
     ptr.ty = clamp((y / r.height - .42) * 2, -1, 1);
-    const xu = 400 + (x - OX - 400 * S - view.dx) / (S * view.k), yu = 772 + (y - OY - 772 * S) / (S * view.k);
+    const xu = 400 + (x - OX - 400 * S - view.dx) / (S * view.k), yu = 772 + (y - OY - 772 * S - view.dy) / (S * view.k);
     const dx = (xu - 400) / 205, dy = (yu - 226) / 178;
     ptr.onHead = dx * dx + dy * dy < 1;
     ptr.headX = clamp((xu - 400) / 190, -1, 1);
@@ -1660,6 +1813,13 @@ body{
   }
 
   document.addEventListener('visibilitychange', () => { if (document.hidden) stopVoice(); });
+  /* La page du site peut demander la visite guidée (bouton « Suivre la visite guidée » de l'accueil) */
+  window.addEventListener('message', e => {
+    const web = /^https?:/.test(location.origin);           /* ouvert depuis un fichier, l'origine vaut « null » */
+    if (e.data !== 'arrakor:visite' || e.origin !== (web ? location.origin : 'null')) return;
+    if (e.source) e.source.postMessage('arrakor:ok', web ? e.origin : '*');
+    if (!act || act.name !== 'tour') play('tour');
+  });
 
   setSound(sound.on);
   layout();
