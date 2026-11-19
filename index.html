@@ -341,6 +341,12 @@ footer a:hover{color:var(--gold)}
 .foot__brand{display:flex;align-items:center;gap:.7rem}
 
 /* ---------- Couleurs : lueurs de braise sur les sections sombres ---------- */
+/* ---------- Mascotte ---------- */
+.mascot{margin-top:clamp(36px,5vw,60px);padding:1px;background:var(--line);clip-path:var(--cut)}
+.mascot iframe{display:block;width:100%;height:clamp(560px,78svh,720px);border:0;background:var(--sand-900);clip-path:var(--cut)}
+.mascot__more{margin-top:16px;font-size:.9rem;color:var(--ink-muted)}
+.mascot__more a{color:var(--gold);text-underline-offset:3px}
+
 .glow-r{background-image:radial-gradient(52% 62% at 100% 0%,rgba(97,44,30,.5) 0%,rgba(97,44,30,.15) 46%,transparent 72%)}
 .glow-l{background-image:radial-gradient(52% 62% at 0% 8%,rgba(97,44,30,.5) 0%,rgba(97,44,30,.15) 46%,transparent 72%)}
 
@@ -415,6 +421,7 @@ footer a:hover{color:var(--gold)}
       <a href="#rover">Rover</a>
       <a href="#methode">Méthode</a>
       <a href="#equipe">Équipe</a>
+      <a href="#mascotte">Mascotte</a>
       <a href="#challenge">Challenge</a>
       <a href="#partenaires">Partenaires</a>
       <a class="nav__ig" href="https://www.instagram.com/arra_kor/" target="_blank" rel="noopener">Instagram</a>
@@ -640,6 +647,19 @@ footer a:hover{color:var(--gold)}
         <li data-rv="up" style="--i:3"><article class="card"><div class="card__disc"><span aria-hidden="true">AB</span><img src="equipe.jpg?v=1" alt="" width="1568" height="726" loading="lazy" decoding="async" style="--k:3"></div><p class="card__tag">Essais</p><h3 class="display card__name">Anass Bahraoui</h3><p class="card__role">R&amp;D fiabilité et essais</p><p class="card__txt">Plans de tests, AMDEC et essais répétés.</p></article></li>
         <li data-rv="up" style="--i:4"><article class="card"><div class="card__disc"><span aria-hidden="true">IA</span><img src="equipe.jpg?v=1" alt="" width="1568" height="726" loading="lazy" decoding="async" style="--k:4"></div><p class="card__tag">Communication</p><h3 class="display card__name">Imane Ahmany</h3><p class="card__role">Marketing, réseaux et stratégie</p><p class="card__txt">Communication, stratégie digitale et valorisation du projet auprès des partenaires.</p></article></li>
       </ul>
+    </div>
+  </section>
+
+  <section class="block glow-l" id="mascotte" aria-labelledby="t-mascotte">
+    <div class="wrap">
+      <div class="head" data-rv="up">
+        <h2 class="display" id="t-mascotte">La mascotte</h2>
+        <p class="lede">Le sixième membre de l’équipage. Demandez-lui de se présenter, de danser ou de faire une pirouette.</p>
+      </div>
+      <div class="mascot" data-rv="up">
+        <iframe src="mascotte.html" title="Mascotte ARRAKOR animée : un robot doré qui se présente, danse et lève le pouce" loading="lazy"></iframe>
+      </div>
+      <p class="mascot__more"><a href="mascotte.html">Ouvrir la mascotte en plein écran</a></p>
     </div>
   </section>
 
