@@ -9,12 +9,13 @@
 <link rel="icon" type="image/png" href="image.png?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600&family=Michroma&display=swap" rel="stylesheet">
 <style>
 /* ==========================================================================
    Plan : une seule scène plein cadre, thème sombre ambré assumé (pas de thème clair).
    Mise en page : mascotte SVG centrée au-dessus d'une barre d'actions,
    un canvas de poussière derrière, un canvas de particules devant.
+   Pendant la présentation de l'équipage, le robot se range et une fiche s'affiche.
    ========================================================================== */
 :root{
   --night:#0d0b08;        /* Nuit : fond du site */
@@ -24,6 +25,8 @@
   --gold-light:#fde9b4;   /* reflets et texte */
   --ink:#2b1a0c;          /* texte sur fond clair */
   --font-ui:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-display:"Michroma","Eurostile",system-ui,sans-serif;
+  --team-img:url("equipe.jpg?v=1");   /* planche des cinq avatars, côte à côte */
   --dock:140px;           /* hauteur réservée à la barre d'actions, recalculée en JS */
   color-scheme:dark;
 }
@@ -85,7 +88,7 @@ body{
 .flashing .flash{animation:flash .8s ease-out 1}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes flash{from{opacity:.9;transform:scale(1)}to{opacity:0;transform:scale(1.3)}}
-.paused *{animation-play-state:paused !important}
+.paused *,.paused *::before{animation-play-state:paused !important}
 
 /* ---------- Bulle ---------- */
 .bubble{
@@ -112,6 +115,88 @@ body{
 .bubble.top{transform-origin:50% 100%}
 .bubble.top::after{left:calc(50% - 9px);bottom:-7px}
 .bubble .off{visibility:hidden}
+
+/* ---------- Présentation de l'équipage ---------- */
+.deck{
+  position:absolute;z-index:2;top:0;bottom:var(--dock);right:max(16px,4%);
+  width:min(450px,44%);
+  display:flex;align-items:center;
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .35s ease,visibility 0s .35s;
+}
+.is-deck .deck{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .35s ease}
+.deck__card{
+  width:100%;
+  padding:20px 24px 16px;
+  background:linear-gradient(160deg,rgba(46,27,13,.88),rgba(18,11,6,.92));
+  border:1px solid rgba(253,233,180,.3);
+  border-radius:22px;
+  box-shadow:0 18px 50px rgba(0,0,0,.45),0 0 40px rgba(255,154,31,.18);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+}
+.is-deck .deck__card{animation:cardIn .65s cubic-bezier(.2,.8,.2,1) both}
+.deck__card.flip{animation:cardFlip .55s cubic-bezier(.2,.8,.2,1) both}
+.deck__bar{display:flex;gap:6px;margin-bottom:18px}
+.deck__bar i{flex:1;height:3px;border-radius:3px;background:rgba(253,233,180,.2);overflow:hidden}
+.deck__bar i::after{content:"";display:block;height:100%;width:calc(var(--p,0) * 100%);border-radius:3px;background:var(--amber)}
+.deck__slide{display:grid;grid-template-columns:auto 1fr;gap:14px 20px;align-items:center;min-height:176px}
+.deck__crew{grid-column:1 / -1;display:flex;gap:10px}
+.deck__slide:not(.is-group) .deck__crew,.deck__slide.is-group .ava--big{display:none}
+.deck__slide.is-group .deck__id{grid-column:1 / -1}
+.ava{
+  position:relative;flex:none;width:58px;aspect-ratio:1;border-radius:50%;
+  background:#2a140c var(--team-img) calc(var(--k) * 25%) 0 / 500% auto no-repeat;
+  box-shadow:0 0 0 2px rgba(242,182,65,.85),0 0 0 6px rgba(242,182,65,.16),0 0 22px rgba(255,154,31,.45);
+}
+.ava--big{width:128px}
+.ava--big::before{                         /* une lueur tourne autour du portrait, comme sur le halo */
+  content:"";position:absolute;inset:-10px;border-radius:50%;
+  background:conic-gradient(from 0deg,transparent 0 68%,var(--amber) 86%,#fff3cf 94%,transparent 100%);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 3px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 3px));
+  animation:spin 3.2s linear infinite;
+}
+.deck__tag{margin:0;font:600 .72rem/1.2 var(--font-ui);letter-spacing:.14em;text-transform:uppercase;color:var(--amber)}
+.deck__name{margin:8px 0 0;font:400 1.02rem/1.3 var(--font-display);letter-spacing:.02em;text-transform:uppercase;color:var(--gold);text-wrap:balance}
+.deck__role{margin:8px 0 0;font:600 1rem/1.3 var(--font-ui);color:var(--gold-light)}
+.deck__txt{grid-column:1 / -1;margin:0;min-height:2.9em;font:500 .95rem/1.45 var(--font-ui);color:rgba(253,233,180,.8)}
+.deck__nav{display:flex;align-items:center;gap:8px;margin-top:12px}
+.deck__btn{
+  display:grid;place-items:center;width:34px;height:34px;padding:0;
+  font:600 1.15rem/1 var(--font-ui);color:var(--gold-light);
+  background:rgba(253,233,180,.08);border:1px solid rgba(253,233,180,.3);border-radius:50%;
+  cursor:pointer;transition:background-color .2s,border-color .2s,transform .2s;
+}
+.deck__btn:hover{background:rgba(253,233,180,.18);border-color:rgba(253,233,180,.7)}
+.deck__btn:active{transform:scale(.92)}
+.deck__btn:focus-visible{outline:2px solid #ffd23a;outline-offset:3px}
+.deck__btn--text{width:auto;margin-left:auto;padding:0 14px;font-size:.84rem;border-radius:999px}
+.deck__count{min-width:3.2em;text-align:center;font:500 .84rem/1 var(--font-ui);font-variant-numeric:tabular-nums;color:rgba(253,233,180,.74)}
+
+/* Chaque fiche arrive par morceaux : portrait, pôle, nom, rôle, texte */
+.deck__slide.go .ava--big{animation:avaIn .7s cubic-bezier(.3,1.5,.5,1) both}
+.deck__slide.go .deck__crew .ava{animation:avaIn .6s cubic-bezier(.3,1.5,.5,1) both;animation-delay:calc(var(--k) * 90ms)}
+.deck__slide.go .deck__tag{animation:rise .5s ease .12s both}
+.deck__slide.go .deck__name{animation:wipe .6s cubic-bezier(.2,.7,.2,1) .2s both}
+.deck__slide.go .deck__role{animation:rise .5s ease .34s both}
+.deck__slide.go .deck__txt{animation:rise .5s ease .46s both}
+@keyframes cardIn{from{opacity:0;transform:perspective(900px) translateX(60px) rotateY(-18deg)}to{opacity:1;transform:none}}
+@keyframes cardFlip{from{transform:perspective(900px) translateX(14px) rotateY(-10deg);filter:brightness(1.35)}to{transform:none;filter:none}}
+@keyframes avaIn{from{opacity:0;transform:scale(.4) rotate(-14deg)}to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes wipe{from{opacity:0;clip-path:inset(0 100% 0 0);transform:translateX(-10px)}to{opacity:1;clip-path:inset(0 -4% 0 0);transform:none}}
+
+/* Cadre étroit : la fiche passe au-dessus du robot, qui rapetisse */
+.is-narrow .deck{top:12px;bottom:auto;left:16px;right:16px;width:auto;max-width:520px;margin-inline:auto;display:block}
+.is-narrow .deck__card{padding:14px 16px 12px}
+.is-narrow .deck__bar{margin-bottom:12px}
+.is-narrow .deck__slide{min-height:132px;gap:8px 14px}
+.is-narrow .ava{width:46px}
+.is-narrow .ava--big{width:84px}
+.is-narrow .deck__txt{min-height:2.7em;font-size:.86rem;line-height:1.35}
+.is-narrow .deck__nav{margin-top:8px}
+.is-narrow.is-deck .bubble{display:none}
+.is-narrow.is-deck .hint,.is-narrow.is-deck .chip[data-act]:not(.is-active){display:none}
 
 /* ---------- Commandes ---------- */
 .dock{
@@ -154,7 +239,8 @@ body{
 
 @media (prefers-reduced-motion: reduce){
   #mascot *{animation:none !important}
-  .bubble,.chip{transition:none}
+  .bubble,.chip,.deck{transition:none}
+  .deck *,.deck *::before{animation:none !important}
 }
 </style>
 </head>
@@ -464,6 +550,30 @@ body{
     </g>
   </svg>
 
+  <section class="deck" id="deck" aria-label="Présentation de l’équipage">
+    <div class="deck__card" id="deck-card">
+      <div class="deck__bar" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="deck__slide is-group" id="deck-slide">
+        <div class="deck__crew" aria-hidden="true">
+          <span class="ava" style="--k:0"></span><span class="ava" style="--k:1"></span><span class="ava" style="--k:2"></span><span class="ava" style="--k:3"></span><span class="ava" style="--k:4"></span>
+        </div>
+        <span class="ava ava--big" id="deck-ava" style="--k:0" aria-hidden="true"></span>
+        <div class="deck__id">
+          <p class="deck__tag" id="deck-tag"></p>
+          <h2 class="deck__name" id="deck-name"></h2>
+          <p class="deck__role" id="deck-role"></p>
+        </div>
+        <p class="deck__txt" id="deck-txt"></p>
+      </div>
+      <div class="deck__nav">
+        <button class="deck__btn" type="button" id="deck-prev" aria-label="Fiche précédente">‹</button>
+        <span class="deck__count" id="deck-count"></span>
+        <button class="deck__btn" type="button" id="deck-next" aria-label="Fiche suivante">›</button>
+        <button class="deck__btn deck__btn--text" type="button" id="deck-close">Fermer</button>
+      </div>
+    </div>
+  </section>
+
   <canvas id="embers" aria-hidden="true"></canvas>
 
   <div class="bubble" id="bubble" aria-hidden="true"><span class="on"></span><span class="off"></span></div>
@@ -474,12 +584,14 @@ body{
   <div class="dock" id="dock">
     <div class="chips" role="group" aria-label="Actions de la mascotte">
       <button class="chip" type="button" data-act="present">Se présenter</button>
+      <button class="chip" type="button" data-act="team">L’équipage</button>
       <button class="chip" type="button" data-act="wave">Coucou</button>
       <button class="chip" type="button" data-act="hearts">Cœurs</button>
       <button class="chip" type="button" data-act="dance">Danser</button>
       <button class="chip" type="button" data-act="spin">Pirouette</button>
       <button class="chip" type="button" data-act="sleep" id="btn-sleep" aria-pressed="false">Dodo</button>
       <button class="chip chip-quiet" type="button" id="btn-pause" aria-pressed="false">Pause</button>
+      <button class="chip chip-quiet" type="button" id="btn-sound">Couper le son</button>
     </div>
     <p class="hint">Touchez le robot pour un pouce levé. Caressez son casque pour le faire rougir.</p>
   </div>
@@ -501,6 +613,26 @@ body{
     "On se retrouve au Game of Robots ? Pouce levé !"
   ];
   const BRAVOS = ['Top !', 'Bien joué !', 'Bravo !', 'Pouce levé !'];
+  /* L'équipage, dans l'ordre des portraits de equipe.jpg. « dit » est la phrase prononcée par le robot. */
+  const EQUIPE = [
+    { nom: 'Loaï Abu-Aita', pole: 'Planification', role: 'Chef de projet agile',
+      txt: 'Planification, points d’avancement et suivi de l’équipe.',
+      dit: 'Voici Loaï Abu-Aita, à la planification. Points d’avancement et suivi de l’équipe : rien ne lui échappe.' },
+    { nom: 'Zakariae Arroub', pole: 'Mécanique', role: 'R&D mécanique et robotique',
+      txt: 'Conception mécanique du rover, de l’exigence à la pièce.',
+      dit: 'Zakariae Arroub, à la mécanique. La conception du rover, de l’exigence à la pièce, c’est son domaine.' },
+    { nom: 'Nermine Badis', pole: 'Logiciel', role: 'R&D logiciel SCADE',
+      txt: 'Modélisation SCADE, machines à états et simulation.',
+      dit: 'Nermine Badis, au logiciel. Modélisation SCADE, machines à états et simulation.' },
+    { nom: 'Anass Bahraoui', pole: 'Essais', role: 'R&D fiabilité et essais',
+      txt: 'Plans de tests, AMDEC et essais répétés.',
+      dit: 'Anass Bahraoui, aux essais. Plans de tests, AMDEC et essais répétés, jusqu’à ce que tout soit fiable.' },
+    { nom: 'Imane Ahmany', pole: 'Communication', role: 'Marketing, réseaux et stratégie',
+      txt: 'Communication, stratégie digitale et valorisation du projet auprès des partenaires.',
+      dit: 'Imane Ahmany, à la communication. Stratégie digitale et valorisation du projet auprès des partenaires.' }
+  ];
+  const EQUIPE_DEBUT = 'Je vous présente l’équipage ARRAKOR ! Cinq spécialités, une obsession.';
+  const EQUIPE_FIN = 'Une équipe, un robot, une seule mission. Pouce levé pour l’équipage !';
 
   /* ---------- Éléments ---------- */
   const $ = id => document.getElementById(id);
@@ -508,7 +640,12 @@ body{
   const dust = $('dust'), embersC = $('embers');
   const dctx = dust.getContext('2d'), ectx = embersC.getContext('2d');
   const bubble = $('bubble'), said = bubble.querySelector('.on'), unsaid = bubble.querySelector('.off'), live = $('live');
-  const btnPause = $('btn-pause'), btnSleep = $('btn-sleep');
+  const btnPause = $('btn-pause'), btnSleep = $('btn-sleep'), btnSound = $('btn-sound');
+  const dk = {
+    root: $('deck'), card: $('deck-card'), slide: $('deck-slide'), ava: $('deck-ava'),
+    tag: $('deck-tag'), name: $('deck-name'), role: $('deck-role'), txt: $('deck-txt'), count: $('deck-count'),
+    bars: [...document.querySelectorAll('.deck__bar i')]
+  };
   const chips = [...document.querySelectorAll('.chip[data-act]')];
   const el = {
     root: $('root'), upper: $('upper'), head: $('head'), eyes: $('eyes'), eyeL: $('eyeL'), eyeR: $('eyeR'),
@@ -536,8 +673,10 @@ body{
 
   /* ---------- Repère : le dessin SVG fait 800 unités de large, sol à y = 772 ---------- */
   let W = 0, H = 0, S = 1, OX = 0, OY = 0;
-  const ux = x => OX + x * S;
-  const uy = y => OY + y * S;
+  /* Pendant la présentation de l'équipage, tout le dessin glisse et rétrécit autour des pieds du robot */
+  const view = { k: 1, dx: 0, kT: 1, dxT: 0 };
+  const ux = x => OX + 400 * S + view.dx + (x - 400) * S * view.k;
+  const uy = y => OY + 772 * S + (y - 772) * S * view.k;
   const SS = () => Math.max(S, .5);
 
   /* ==========================================================================
@@ -551,7 +690,8 @@ body{
     blush: 0, glow: 1, emb: 1,
     la1: 85, la2: 55, lw: 40, lopen: 0,                    /* bras gauche : épaule, coude, poignet, main ouverte */
     ra1: -35, ra2: 55, rw: 0, ropen: 0,                    /* bras droit */
-    legL: 0, legR: 0, capeAmp: 1, capeLift: 0, halo: 1, haloS: 1
+    legL: 0, legR: 0, capeAmp: 1, capeLift: 0, halo: 1, haloS: 1,
+    deck: 0                                                /* 1 = le robot se range à côté de la fiche */
   };
   const SPRING = {                                         /* [raideur, amortissement] */
     _: [170, 20], rx: [300, 26], ry: [700, 40], sq: [520, 32],
@@ -559,7 +699,7 @@ body{
     eyeL: [900, 46], eyeR: [900, 46], eyeS: [380, 22],
     arc: [340, 37], heart: [340, 37], round: [340, 37], lopen: [340, 37], ropen: [340, 37],
     blush: [70, 17], glow: [80, 18], emb: [120, 18], halo: [70, 15], haloS: [220, 16],
-    lookX: [110, 20], lookY: [110, 20], capeAmp: [40, 12], capeLift: [90, 14]
+    lookX: [110, 20], lookY: [110, 20], capeAmp: [40, 12], capeLift: [90, 14], deck: [55, 15]
   };
   const KEYS = Object.keys(DEF);
   const cur = { ...DEF }, tgt = { ...DEF }, vel = {};
@@ -580,31 +720,109 @@ body{
 
   /* ---------- État général ---------- */
   let t = 0, last = 0, running = false, paused = false, visible = true;
-  let act = null, asleep = false;
+  let act = null, asleep = false, narrow = false, deckOpen = false;
   const queue = [];
   let px = 0, py = 0;
   const ptr = { tx: 0, ty: 0, lastMove: -1e9, onHead: false, lastRub: -1e9, headX: 0 };
   let pet = 0, petSaid = -1e9;
   let nextBlink = 2, blinkEnd = 0, nextIdle = 7, nextHeart = 0, nextNote = 0, nextZ = 0, nextPetHeart = 0;
 
+  /* ==========================================================================
+     Son : la voix du robot est la synthèse vocale du navigateur, en français et
+     plus aiguë que la normale. Sans voix française, de petits bips suivent le
+     texte. Rien ne se fait entendre avant un clic ou une touche.
+     ========================================================================== */
+  const synth = 'speechSynthesis' in window ? window.speechSynthesis : null;
+  const sound = { on: true, ctx: null, voice: null, busy: false, token: 0, t0: 0, until: 0, phrase: null };
+  try { sound.on = localStorage.getItem('arrakor-son') !== 'non'; } catch (e) { /* stockage indisponible */ }
+
+  function pickVoice() {
+    const fr = synth.getVoices().filter(v => /^fr/i.test(v.lang));
+    sound.voice = fr.find(v => /google/i.test(v.name)) || fr.find(v => /^fr[-_]FR/i.test(v.lang)) || fr[0] || null;
+  }
+  if (synth) {
+    pickVoice();
+    if (synth.addEventListener) synth.addEventListener('voiceschanged', pickVoice);
+  }
+  const hasVoice = () => sound.on && !!synth && !!sound.voice;
+  const voiceBusy = () => {
+    const now = performance.now();
+    return sound.busy && now < sound.until && (now - sound.t0 < 900 || synth.speaking || synth.pending);
+  };
+
+  function stopVoice() {
+    sound.token++; sound.busy = false;
+    if (synth) { try { synth.cancel(); } catch (e) { /* rien à couper */ } }
+  }
+  function speak(text) {
+    stopVoice();
+    if (!hasVoice()) return;
+    const u = new SpeechSynthesisUtterance(text.replace(/&/g, ' et '));
+    const id = sound.token;
+    const done = () => { if (id === sound.token) sound.busy = false; };
+    u.voice = sound.voice; u.lang = sound.voice.lang;
+    u.pitch = 1.6; u.rate = 1.06; u.volume = 1;
+    u.onend = done; u.onerror = done;
+    sound.busy = true; sound.phrase = u;                   /* la référence évite que la phrase soit oubliée en route */
+    sound.t0 = performance.now();
+    sound.until = sound.t0 + (text.length / 11 + 3) * 1000;            /* garde-fou si la fin n'est jamais signalée */
+    try { synth.resume(); synth.speak(u); } catch (e) { sound.busy = false; }
+  }
+
+  function unlock() {                                      /* à appeler sur un clic ou une touche */
+    if (!sound.on) return;
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!sound.ctx && AC) sound.ctx = new AC();
+      if (sound.ctx && sound.ctx.state === 'suspended') sound.ctx.resume();
+    } catch (e) { /* pas d'audio : la mascotte reste muette */ }
+  }
+  function tone(freq, dur, type, vol, slide, delay) {
+    const ac = sound.ctx;
+    if (!sound.on || !ac || ac.state !== 'running') return;
+    const o = ac.createOscillator(), g = ac.createGain(), t0 = ac.currentTime + (delay || 0);
+    o.type = type;
+    o.frequency.setValueAtTime(freq, t0);
+    if (slide) o.frequency.exponentialRampToValueAtTime(slide, t0 + dur);
+    g.gain.setValueAtTime(0, t0);
+    g.gain.linearRampToValueAtTime(vol, t0 + .012);
+    g.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
+    o.connect(g); g.connect(ac.destination);
+    o.start(t0); o.stop(t0 + dur + .03);
+  }
+  const sfx = {
+    chime() { tone(880, .22, 'sine', .07); tone(1318.5, .36, 'sine', .06, 0, .09); },
+    pop() { tone(320, .12, 'sine', .07, 640); },
+    blip(ch) { tone(520 + (ch.charCodeAt(0) % 9) * 42, .055, 'triangle', .045); }
+  };
+  function setSound(on) {
+    sound.on = on;
+    try { localStorage.setItem('arrakor-son', on ? 'oui' : 'non'); } catch (e) { /* stockage indisponible */ }
+    btnSound.textContent = on ? 'Couper le son' : 'Activer le son';
+    if (!on) stopVoice();
+  }
+
   /* ---------- Bulle de texte ---------- */
   const CPS = 32;
   const speech = { on: false, text: '', start: 0, end: 0, shown: -1 };
 
   function placeBubble() {
-    const sideLeft = ux(604), room = W - sideLeft - 16;
+    /* on vise la place du robot au repos, ou celle qu'il prend pendant la présentation, jamais une position de transition */
+    const k = deckOpen ? view.kT : 1, dx = deckOpen ? view.dxT : 0;
+    const px = x => OX + 400 * S + dx + (x - 400) * S * k, py = y => OY + 772 * S + (y - 772) * S * k;
+    const sideLeft = px(604), room = W - sideLeft - 16;
     bubble.classList.remove('side', 'top');
-    if (room >= 200) {
+    if (room >= 200 && !deckOpen) {
       bubble.classList.add('side');
       bubble.style.maxWidth = Math.min(300, room) + 'px';
       bubble.style.left = sideLeft + 'px';
-      bubble.style.top = Math.max(12, uy(118)) + 'px';
+      bubble.style.top = Math.max(12, py(118)) + 'px';
     } else {
       bubble.classList.add('top');
       bubble.style.maxWidth = Math.min(300, W - 32) + 'px';
       const bw = bubble.offsetWidth, bh = bubble.offsetHeight;
-      bubble.style.left = clamp(ux(400) - bw / 2, 16, Math.max(16, W - 16 - bw)) + 'px';
-      bubble.style.top = Math.max(12, uy(8) - bh - 18) + 'px';
+      bubble.style.left = clamp(px(400) - bw / 2, 16, Math.max(16, W - 16 - bw)) + 'px';
+      bubble.style.top = Math.max(12, py(8) - bh - 18) + 'px';
     }
   }
   function say(text, hold = 1.6) {
@@ -615,14 +833,19 @@ body{
     live.textContent = text;
     placeBubble();
     bubble.classList.add('show');
+    speak(text);
   }
+  function hideBubble() { speech.on = false; bubble.classList.remove('show'); }
   function updateSpeech() {
     if (!speech.on) return;
     if (!calm) {
       const n = Math.min(speech.text.length, Math.floor((t - speech.start) * CPS));
-      if (n !== speech.shown) { speech.shown = n; said.textContent = speech.text.slice(0, n); unsaid.textContent = speech.text.slice(n); }
+      if (n !== speech.shown) {
+        if (n > speech.shown && n % 2 === 0 && n > 0 && sound.on && !hasVoice() && speech.text[n - 1].trim()) sfx.blip(speech.text[n - 1]);
+        speech.shown = n; said.textContent = speech.text.slice(0, n); unsaid.textContent = speech.text.slice(n);
+      }
     }
-    if (t > speech.end) { speech.on = false; bubble.classList.remove('show'); }
+    if (t > speech.end && !voiceBusy()) hideBubble();
   }
 
   /* ==========================================================================
@@ -693,11 +916,12 @@ body{
       size: rand(1.4, 4.2), life: anywhere ? rand(0, 6) : 0, max: rand(6, 14)
     };
   }
-  function emit(kind, xu, yu, o) {
+  function emitAt(kind, x, y, o) {                         /* position en pixels dans le cadre */
     if (calm) return;
-    parts.push(Object.assign({ kind, x: ux(xu), y: uy(yu), vx: 0, vy: 0, g: 0, sway: 0, ph: rand(0, 6.28),
+    parts.push(Object.assign({ kind, x, y, vx: 0, vy: 0, g: 0, sway: 0, ph: rand(0, 6.28),
       size: 10, rot: 0, vr: 0, life: 0, max: 1 }, o));
   }
+  const emit = (kind, xu, yu, o) => emitAt(kind, ux(xu), uy(yu), o);   /* position dans le repère du dessin */
   function burst(xu, yu, n, speed) {
     for (let i = 0; i < n; i++) {
       const a = rand(0, Math.PI * 2), v = rand(.35, 1) * speed * S;
@@ -808,45 +1032,126 @@ body{
     T.ra1 = -a1; T.ra2 = -a2; T.rw = 0; T.ropen = 1;
   }
 
-  function buildPresent() {
-    const d = PRESENTATION.map(s => s.length / CPS + 1.7);
-    const t1 = .2 + d[0], t2 = t1 + d[1], t3 = t2 + d[2];
+  /* ==========================================================================
+     Présentations par étapes : chaque étape dure le temps de sa phrase (voix
+     comprise), puis laisse la place à la suivante.
+     ========================================================================== */
+  function scripted(steps, leave) {
     return {
-      dur: t3 + 1.3, still: t2 + .6,
-      cues: [
-        [.2, () => say(PRESENTATION[0], 2)],
-        [t1, () => say(PRESENTATION[1], 2)],
-        [t2, () => say(PRESENTATION[2], 1.9)],
-        [t3 + .2, () => { burst(226, 330, 44, 330); haloBurst(26); }]
-      ],
-      pose(T, x) {
-        if (x < t1) {                          /* 1. salue de la main */
-          hop(T, x, .1, .42, 24);
-          waveArm(T, x);
-          T.hrot += 5; T.eyeS = 1.08; T.rrot += 1.5 * Math.sin(x * 5);
-        } else if (x < t2) {                   /* 2. poing sur le cœur, petite révérence */
+      dur: Infinity, still: 0, cues: [], steps,
+      pose(T, x, a) {
+        if (a.i === undefined) { a.i = -1; a.s0 = t; a.min = 0; a.heard = -9; }
+        if (voiceBusy()) a.heard = t;
+        const over = t - a.s0 >= a.min && !voiceBusy() && t - a.heard >= .45;
+        if (a.i < 0 || a.goto !== undefined || over) {
+          const next = a.goto !== undefined ? a.goto : a.i + 1;
+          a.goto = undefined;
+          if (next >= steps.length) { a.done = true; return; }
+          const st = steps[next];
+          a.i = next; a.s0 = t; a.heard = -9; a.cue = 0;
+          a.min = st.say ? st.say.length / CPS + (hasVoice() ? .9 : 1.9) : st.dur;
+          a.est = st.say ? Math.max(a.min, st.say.length / 14 + .8) : st.dur;
+          if (st.say) say(st.say, Infinity); else hideBubble();
+          if (st.enter) st.enter(a);
+        }
+        steps[a.i].pose(T, calm ? .5 : t - a.s0, a);
+      },
+      leave() { hideBubble(); stopVoice(); if (leave) leave(); }
+    };
+  }
+
+  function buildPresent() {
+    return scripted([
+      { say: PRESENTATION[0],                   /* 1. salue de la main */
+        pose(T, x) { hop(T, x, .1, .42, 24); waveArm(T, x); T.hrot += 5; T.eyeS = 1.08; T.rrot += 1.5 * Math.sin(x * 5); } },
+      { say: PRESENTATION[1],                   /* 2. poing sur le cœur, petite révérence */
+        pose(T, x) {
           T.ra1 = -63; T.ra2 = 158; T.rw = 0; T.ropen = 0;
           T.bodyRot = 3; T.hrot -= 5; T.hy += 3;
           T.emb = 1.9 + .4 * Math.sin(x * 6);
-        } else if (x < t3) {                   /* 3. bras ouverts vers le halo */
+        } },
+      { say: PRESENTATION[2],                   /* 3. bras ouverts vers le halo */
+        pose(T, x) {
           armsOut(T, 118, 22);
           T.ry -= 6; T.hrot += 3 * Math.sin(x * 3);
           T.halo = 1.8; T.haloS = 1.035; T.capeAmp = 1.7; T.eyeS = 1.08;
-        } else {                               /* 4. pouce levé et clin d'œil */
-          hop(T, x, t3 + .1, .42, 30);
-          T.eyeS = 1.12; T.halo = 1.5;
-          if (within(x, t3 + .5, t3 + .95)) T.eyeR = .06;
-        }
-      }
+        } },
+      { dur: 1.3,                               /* 4. pouce levé et clin d'œil */
+        enter() { burst(226, 330, 44, 330); haloBurst(26); sfx.chime(); },
+        pose(T, x) { hop(T, x, .1, .42, 30); T.eyeS = 1.12; T.halo = 1.5; if (within(x, .5, .95)) T.eyeR = .06; } }
+    ]);
+  }
+
+  /* ---------- L'équipage : une fiche par membre, façon diaporama ---------- */
+  function fitDeck() {                         /* où le robot se range pendant la présentation */
+    if (narrow) {
+      const room = OY + 772 * S - (dk.root.offsetTop + dk.root.offsetHeight) - 10;
+      view.kT = clamp(room / (756 * S), .3, .8); view.dxT = 0;
+    } else { view.kT = .86; view.dxT = -W * .22; }
+  }
+  function showSlide(i, a) {                   /* -1 : ouverture, 0 à 4 : un membre, 5 : final */
+    const m = EQUIPE[i], group = !m, first = i < 0;
+    deckOpen = true;
+    stage.classList.add('is-deck');
+    dk.slide.classList.remove('go'); dk.card.classList.remove('flip');
+    dk.slide.classList.toggle('is-group', group);
+    dk.tag.textContent = group ? (first ? 'Game of Robots 2026' : 'ARRAKOR') : m.pole;
+    dk.name.textContent = group ? (first ? 'L’équipage' : 'L’équipage au complet') : m.nom;
+    dk.role.textContent = group ? (first ? 'Cinq spécialités, une obsession.' : 'Une équipe. Un robot. Une seule mission.') : m.role;
+    dk.txt.textContent = group ? '' : m.txt;
+    dk.count.textContent = group ? '' : (i + 1) + ' / ' + EQUIPE.length;
+    if (!group) dk.ava.style.setProperty('--k', i);
+    dk.bars.forEach((b, k) => b.style.setProperty('--p', group ? (first ? 0 : 1) : (k < i ? 1 : 0)));
+    a.bar = group ? null : dk.bars[i];
+    a.sparkled = group;
+    void dk.slide.offsetWidth;                 /* relance les animations d'arrivée */
+    dk.slide.classList.add('go');
+    if (!first) dk.card.classList.add('flip');
+    fitDeck();
+    if (speech.on) placeBubble();
+    sfx.pop();
+  }
+  function closeDeck() { deckOpen = false; stage.classList.remove('is-deck'); }
+  function deckGo(dir) {
+    if (!act || act.name !== 'team') return;
+    unlock();
+    act.goto = clamp(act.i + dir, 0, act.def.steps.length);
+  }
+  function sparkleAround(node) {               /* une couronne d'étincelles autour du portrait */
+    const r = node.getBoundingClientRect(), s = stage.getBoundingClientRect();
+    const cx = r.left - s.left + r.width / 2, cy = r.top - s.top + r.height / 2, rad = node.offsetWidth / 2 + 8;
+    for (let i = 0; i < 18; i++) {
+      const g = i / 18 * Math.PI * 2, v = rand(30, 90);
+      emitAt('spark', cx + Math.cos(g) * rad, cy + Math.sin(g) * rad,
+        { vx: Math.cos(g) * v, vy: Math.sin(g) * v, size: rand(1.4, 3.2), max: rand(.5, .95) });
+    }
+  }
+  function buildTeam() {
+    const point = (T, x, a) => {               /* le robot montre la fiche */
+      T.deck = 1;
+      hop(T, x, .05, .36, 14);
+      if (narrow) { T.ra1 = -150; T.ra2 = -12; T.lookY -= 4; T.hy -= 2; }
+      else { T.ra1 = -96 + 4 * Math.sin(x * 2.4); T.ra2 = -8; T.lookX += 5; T.hrot += 3; }
+      T.rw = 0; T.ropen = 1;
+      if (!a.sparkled && x > .32) { a.sparkled = true; sparkleAround(dk.ava); }
     };
+    const steps = [{ say: EQUIPE_DEBUT, enter(a) { showSlide(-1, a); }, pose: point }];
+    EQUIPE.forEach((m, i) => steps.push({ say: m.dit, enter(a) { showSlide(i, a); }, pose: point }));
+    steps.push({
+      say: EQUIPE_FIN,
+      enter(a) { showSlide(EQUIPE.length, a); burst(226, 330, 40, 320); haloBurst(24); sfx.chime(); },
+      pose(T, x) { T.deck = 1; hop(T, x, .1, .42, 26); T.eyeS = 1.12; T.halo = 1.6; if (within(x, 1, 1.4)) T.eyeR = .06; }
+    });
+    return scripted(steps, closeDeck);
   }
 
   const ACTIONS = {
     present: buildPresent(),
+    team: buildTeam(),
 
     cheer: {
       dur: 1.55, still: .5,
-      cues: [[.2, () => { burst(226, 330, 46, 330); haloBurst(28); say(pick(BRAVOS), 1.1); }]],
+      cues: [[.2, () => { burst(226, 330, 46, 330); haloBurst(28); sfx.chime(); say(pick(BRAVOS), 1.1); }]],
       pose(T, x) {
         hop(T, x, .1, .5, 40);
         const e = bell(x, .1, 1.15);
@@ -892,7 +1197,7 @@ body{
 
     dance: {
       dur: 6.7, still: 1.25,
-      cues: [[.1, () => say('En piste !', 1.2)], [6.2, () => { burst(226, 330, 40, 320); haloBurst(24); }]],
+      cues: [[.1, () => say('En piste !', 1.2)], [6.2, () => { burst(226, 330, 40, 320); haloBurst(24); sfx.chime(); }]],
       pose(T, x) {
         if (x > 6.05) { hop(T, x, 6.1, .42, 30); T.eyeS = 1.12; return; }
         const e = smooth(x / .4) * smooth((6.05 - x) / .3);
@@ -990,7 +1295,8 @@ body{
   }
 
   function play(name, auto) {
-    if (!auto && paused) setPaused(false);
+    if (!auto) { if (paused) setPaused(false); unlock(); }
+    if (act && act.def.leave) act.def.leave();             /* referme proprement ce qui était en cours */
     if (name === 'sleep') name = (asleep || (act && act.name === 'yawn')) ? 'wake' : 'yawn';
     if (asleep) {                              /* toute action réveille d'abord le robot */
       queue.length = 0;
@@ -1006,6 +1312,7 @@ body{
   function finish() {
     const def = act.def;
     act = null; spin = 0;
+    if (def.leave) def.leave();
     if (def.onEnd) def.onEnd();
     nextIdle = t + rand(6, 10);
     if (queue.length) play(queue.shift());
@@ -1041,7 +1348,14 @@ body{
       const x = t - act.t0, def = act.def;
       def.pose(T, calm ? def.still : x, act);
       while (act.cue < def.cues.length && def.cues[act.cue][0] <= x) def.cues[act.cue++][1]();
-      if (x >= def.dur) finish();
+      if (act.bar) act.bar.style.setProperty('--p', R(clamp((t - act.s0) / act.est, 0, 1)));
+      if (x >= def.dur || act.done) finish();
+    }
+
+    /* quand il parle, le robot hoche la tête et son emblème palpite */
+    if (!calm && !asleep && (voiceBusy() || (speech.on && speech.shown < speech.text.length))) {
+      const w = Math.sin(t * 14);
+      T.hy += 1.3 * w; T.emb += .5 + .4 * w; T.eyeS += .025 * w;
     }
 
     /* caresse sur le casque */
@@ -1085,6 +1399,9 @@ body{
 
   function apply() {
     const c = cur;
+    const d = clamp(c.deck, 0, 1.05);
+    view.k = 1 + (view.kT - 1) * d; view.dx = view.dxT * d;
+    svg.style.transform = d > .002 ? `translate(${R(view.dx)}px,0) scale(${view.k.toFixed(4)})` : '';
     const turn = Math.cos(spin);
     const flip = (turn < 0 ? -1 : 1) * Math.max(Math.abs(turn), .14);
     el.root.setAttribute('transform',
@@ -1215,17 +1532,23 @@ body{
     stage.classList.toggle('paused', paused);
     btnPause.setAttribute('aria-pressed', String(paused));
     btnPause.textContent = paused ? 'Reprendre' : 'Pause';
-    if (paused) running = false; else start();
+    if (paused) { running = false; stopVoice(); } else start();
   }
 
   /* ---------- Mise en page ---------- */
   function layout() {
-    stage.style.setProperty('--dock', (dock.offsetHeight + 26) + 'px');
-    const sr = stage.getBoundingClientRect(), r = svg.getBoundingClientRect();
+    const dockH = dock.offsetHeight + 26;
+    stage.style.setProperty('--dock', dockH + 'px');
+    const sr = stage.getBoundingClientRect();
     W = sr.width; H = sr.height;
-    S = Math.min(r.width / 800, r.height / 830);
-    OX = (r.left - sr.left) + (r.width - 800 * S) / 2;
-    OY = (r.top - sr.top) + (r.height - 830 * S) / 2 + 30 * S;
+    const hs = Math.max(1, H - dockH);                     /* hauteur de la zone du dessin */
+    S = Math.min(W / 800, hs / 830);
+    OX = (W - 800 * S) / 2;
+    OY = (hs - 830 * S) / 2 + 30 * S;
+    narrow = W < 820;
+    stage.classList.toggle('is-narrow', narrow);
+    svg.style.transformOrigin = `${R(OX + 400 * S)}px ${R(OY + 772 * S)}px`;
+    fitDeck();
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     for (const c of [dust, embersC]) {
       c.width = Math.max(1, Math.round(W * dpr));
@@ -1243,8 +1566,14 @@ body{
   robot.addEventListener('click', () => play('cheer'));
   chips.forEach(c => c.addEventListener('click', () => play(c.dataset.act)));
   btnPause.addEventListener('click', () => setPaused(!paused));
+  btnSound.addEventListener('click', () => { setSound(!sound.on); unlock(); });
+  $('deck-prev').addEventListener('click', () => deckGo(-1));
+  $('deck-next').addEventListener('click', () => deckGo(1));
+  $('deck-close').addEventListener('click', () => { if (act && act.name === 'team') act.done = true; });
 
   window.addEventListener('keydown', e => {
+    if (deckOpen && e.key === 'Escape') { if (act) act.done = true; return; }
+    if (deckOpen && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) { e.preventDefault(); deckGo(e.key === 'ArrowRight' ? 1 : -1); return; }
     if (e.target instanceof HTMLButtonElement) return;
     if (e.code === 'Space') { e.preventDefault(); play('cheer'); }
     const n = Number(e.key);
@@ -1256,7 +1585,7 @@ body{
     const x = e.clientX - r.left, y = e.clientY - r.top, now = performance.now();
     ptr.tx = clamp((x / r.width - .5) * 2, -1, 1);
     ptr.ty = clamp((y / r.height - .42) * 2, -1, 1);
-    const xu = (x - OX) / S, yu = (y - OY) / S;
+    const xu = 400 + (x - OX - 400 * S - view.dx) / (S * view.k), yu = 772 + (y - OY - 772 * S) / (S * view.k);
     const dx = (xu - 400) / 205, dy = (yu - 226) / 178;
     ptr.onHead = dx * dx + dy * dy < 1;
     ptr.headX = clamp((xu - 400) / 190, -1, 1);
@@ -1269,9 +1598,12 @@ body{
   new ResizeObserver(layout).observe(stage);
   new ResizeObserver(layout).observe(dock);
   if ('IntersectionObserver' in window) {
-    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) start(); }).observe(stage);
+    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) start(); else stopVoice(); }).observe(stage);
   }
 
+  document.addEventListener('visibilitychange', () => { if (document.hidden) stopVoice(); });
+
+  setSound(sound.on);
   layout();
   start();
 })();
