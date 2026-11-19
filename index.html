@@ -11,7 +11,9 @@
 <meta property="og:title" content="ARRAKOR – Équipe n°1 du Game of Robots 2026">
 <meta property="og:description" content="Une équipe. Un robot. Une seule mission. Rendez-vous du 14 au 18 décembre 2026 à Polytech Angers.">
 <meta property="og:url" content="https://zakariae-arroub.github.io/arrakor/">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230d0b08'/%3E%3Ccircle cx='32' cy='40' r='22' fill='%23612c1e'/%3E%3Cpath d='M10 40a22 22 0 0 1 44 0' fill='none' stroke='%23f2b641' stroke-width='4'/%3E%3Cpath d='M0 52c16-8 40-8 64 0v12H0z' fill='%230d0b08'/%3E%3C/svg%3E">
+<meta property="og:image" content="https://zakariae-arroub.github.io/arrakor/image.png">
+<link rel="icon" type="image/png" href="image.png?v=2">
+<link rel="apple-touch-icon" href="image.png?v=2">
 <script>document.documentElement.className="js";</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -107,12 +109,15 @@ h2.display{font-size:clamp(1.35rem,2.6vw,2.05rem);line-height:1.2;text-wrap:bala
 .hero__rover{position:absolute;left:0;top:0;width:76px;height:38px;overflow:visible;will-change:transform}
 .hero__rover .whl g{transform-box:fill-box;transform-origin:center;animation:spin 1.5s linear infinite}
 @media (max-width:640px){.hero__rover{width:56px;height:28px}}
-.hero__body{position:relative;z-index:2;width:min(100% - 2*var(--gutter),1200px);margin:0 auto;padding:clamp(84px,12vh,160px) 0 0;text-align:center;transform:translate3d(0,calc(var(--sy,0)*-.07px),0);opacity:calc(1 - var(--sy,0)/640)}
+.hero__body{position:relative;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);align-items:center;gap:clamp(16px,4vw,64px);width:min(100% - 2*var(--gutter),1180px);margin:0 auto;padding:clamp(76px,10vh,140px) 0 0}
+.hero__logo{justify-self:center;width:min(100%,clamp(230px,54vh,470px));aspect-ratio:1}
+.hero__logo img{display:block;width:118%;max-width:none;height:auto;aspect-ratio:1;margin:-9%;mix-blend-mode:lighten;animation:logoin 1.6s var(--ease) .15s both,float 7s ease-in-out 2s infinite}
+.hero__txt{position:relative;z-index:2;transform:translate3d(0,calc(var(--sy,0)*-.07px),0);opacity:calc(1 - var(--sy,0)/640)}
+@media (max-width:900px){.hero__body{grid-template-columns:1fr;gap:0;text-align:center}.hero__logo{width:clamp(200px,58vw,330px)}}
 .hero__meta{font:600 .78rem/1.4 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);text-wrap:balance}
 .hero__meta b{color:var(--ink);font-weight:600}
-.hero h1{margin-top:clamp(18px,3vh,30px);font-size:clamp(1.8rem,min(10.2vw,15.5vh),8rem);line-height:1.05;white-space:nowrap;letter-spacing:.16em;text-indent:.16em}
-.hero h1 span{display:inline-block;text-indent:0;background:linear-gradient(180deg,#ffe7ae 0%,#f2b641 46%,#b3741a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
-.hero__tag{margin-top:clamp(18px,3vh,28px);font-size:clamp(1.05rem,2vw,1.35rem);font-weight:500;color:var(--ink);text-wrap:balance}
+.hero__tag{margin-top:clamp(14px,2.4vh,24px);font-size:clamp(1.3rem,2.9vw,2.2rem);line-height:1.2;color:var(--ink)}
+.hero__tag span{display:block}
 .hero__when{margin-top:.5rem;color:var(--ink-muted);text-wrap:balance}
 
 .count{display:inline-grid;grid-template-columns:repeat(4,minmax(64px,104px));margin-top:clamp(24px,4vh,40px);border:1px solid var(--line);background:rgba(13,11,8,.72)}
@@ -125,7 +130,8 @@ h2.display{font-size:clamp(1.35rem,2.6vw,2.05rem);line-height:1.2;text-wrap:bala
 .count__msg{display:none;margin-top:clamp(28px,5vh,48px);font:500 1.05rem/1.4 var(--mono);color:var(--gold)}
 .hero.is-live .count,.hero.is-live .count__note,.hero.is-over .count,.hero.is-over .count__note{display:none}
 .hero.is-live .count__msg,.hero.is-over .count__msg{display:block}
-.hero__cta{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:clamp(22px,3.6vh,34px)}
+.hero__cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:clamp(22px,3.6vh,34px)}
+@media (max-width:900px){.hero__cta{justify-content:center}}
 
 @keyframes rise{from{transform:translateY(9%);opacity:.25}to{transform:none;opacity:1}}
 @keyframes letter{from{opacity:0;transform:translateY(.4em) scale(1.12);filter:blur(8px)}to{opacity:1;transform:none;filter:blur(0)}}
@@ -136,8 +142,8 @@ h2.display{font-size:clamp(1.35rem,2.6vw,2.05rem);line-height:1.2;text-wrap:bala
 @keyframes ticker{to{transform:translateX(calc(var(--w,50%)*-1))}}
 @keyframes pulse{50%{opacity:.35}}
 .hero .planet{animation:rise 2.2s var(--ease) both}
-.hero h1 span{animation:letter 1s var(--ease) calc(.3s + var(--i)*85ms) both}
-.hero__meta,.hero__tag,.hero__when,.count,.count__note,.count__msg,.hero__cta{animation:fade .9s 1.2s ease both}
+.hero__tag span{animation:letter 1s var(--ease) calc(.9s + var(--i)*170ms) both}
+.hero__meta,.hero__when,.count,.count__note,.count__msg,.hero__cta{animation:fade .9s 1.5s ease both}
 
 /* ---------- Bandeau défilant ---------- */
 .ticker{overflow:hidden;border-block:1px solid var(--line);background:var(--sand-800);padding:17px 0}
@@ -325,13 +331,10 @@ footer a{color:var(--ink);text-underline-offset:3px}
 footer a:hover{color:var(--gold)}
 
 /* ---------- Logo ---------- */
-.mark{width:30px;height:30px;flex:none}
-.hero h1 .o{margin-right:.16em;background:none}
-.hero h1 .o svg{display:inline-block;width:.78em;height:.78em;vertical-align:-.03em;overflow:visible;filter:drop-shadow(0 0 .1em rgba(242,182,65,.5))}
-.o__ring{stroke-dasharray:1;animation:draw 1.3s var(--ease) 1s both}
-.o__planet{animation:mrise 1.9s var(--ease) 1.3s both}
-@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
-@keyframes mrise{from{transform:translateY(22px)}to{transform:none}}
+.mark{flex:none;width:38px;height:38px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 1px var(--gold)}
+.mark img{display:block;width:150%;max-width:none;height:150%;margin:-17% 0 0 -25%}
+@keyframes logoin{from{opacity:0;transform:scale(.84);filter:blur(14px) brightness(1.9)}to{opacity:1;transform:none;filter:blur(0) brightness(1)}}
+@keyframes float{50%{transform:translateY(-9px)}}
 .foot__brand{display:flex;align-items:center;gap:.7rem}
 
 /* ---------- Couleurs : lueurs de braise sur les sections sombres ---------- */
@@ -361,17 +364,19 @@ footer a:hover{color:var(--gold)}
 .dune-div{position:absolute;left:0;width:100%;height:clamp(56px,8vw,120px)}
 .dune-div--top{top:-1px}
 .dune-div--bot{bottom:-1px}
-.partners{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(28px,5vw,72px);align-items:center;margin-top:clamp(36px,5vw,60px)}
-@media (max-width:860px){.partners{grid-template-columns:1fr}}
-.partners__img{max-width:430px}
-.partners__img div{overflow:hidden;aspect-ratio:345/175;clip-path:var(--cut)}
-.partners__img img{display:block;width:109.86%;max-width:none;height:auto;margin:-6.09% 0 0 -8.7%;transition:transform .9s var(--ease)}
-.partners__img:hover img{transform:scale(1.05)}
-.partners__list{border-top:1px solid var(--sable-line)}
-.partners__list li{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:.3rem clamp(14px,3vw,32px);align-items:baseline;padding:clamp(14px,2vw,20px) 0;border-bottom:1px solid var(--sable-line)}
-.partners__list b{font-family:var(--display);font-weight:400;text-transform:uppercase;letter-spacing:.04em;font-size:clamp(.92rem,1.4vw,1.05rem)}
-.partners__list span{color:var(--ink-dark-muted)}
-@media (max-width:520px){.partners__list li{grid-template-columns:1fr}}
+.pgrid{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(12px,1.8vw,20px);margin-top:clamp(36px,5vw,60px)}
+.pgrid li{display:flex;flex:1 1 190px;max-width:250px}
+@media (max-width:1100px){.pgrid li{flex-basis:30%}}
+@media (max-width:700px){.pgrid li{flex-basis:45%}}
+@media (max-width:460px){.pgrid li{flex-basis:100%;max-width:none}}
+.plaque{position:relative;isolation:isolate;flex:1;display:flex;flex-direction:column;padding:22px 20px 24px;background:var(--sable-line);color:var(--ink-dark);clip-path:var(--cut);transition:transform .4s var(--ease),background-color .35s ease}
+.plaque::before{content:"";position:absolute;inset:1px;z-index:-1;background:#fffdf8;clip-path:inherit}
+.plaque::after{content:"";order:-1;width:28px;height:2px;background:var(--gold-dark);transition:width .45s var(--ease)}
+.plaque img{display:block;width:100%;height:var(--h,40px);margin:calc(24px + (40px - var(--h,40px))/2) 0;object-fit:contain;object-position:left center}
+.plaque b{display:flex;align-items:center;min-height:40px;margin:24px 0;font-family:var(--display);font-weight:400;text-transform:uppercase;letter-spacing:.04em;font-size:clamp(1rem,1.5vw,1.15rem);line-height:1.3}
+.plaque span{padding-top:16px;border-top:1px solid var(--sable-line);font-size:.92rem;line-height:1.5;color:var(--ink-dark-muted)}
+.plaque:hover{transform:translateY(-6px);background:var(--gold-dark)}
+.plaque:hover::after{width:56px}
 
 /* Questions fréquentes */
 .faq{border-top:1px solid var(--line)}
@@ -391,17 +396,15 @@ footer a:hover{color:var(--gold)}
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important}
 }
-@media (forced-colors:active){.hero h1 span{background:none;color:CanvasText;-webkit-text-fill-color:CanvasText}}
 </style>
 </head>
 <body>
 <a class="skip" href="#mission">Aller au contenu</a>
 <div class="bar" id="bar" aria-hidden="true"></div>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><clipPath id="mk"><circle cx="24" cy="24" r="19.5"/></clipPath></defs><symbol id="mark" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22.5" fill="none" stroke="#f2b641" stroke-width="1.6"/><g clip-path="url(#mk)"><rect width="48" height="48" fill="#120c08"/><circle cx="24" cy="29" r="12.5" fill="#dc8a3e"/><path d="M24 16.5a12.5 12.5 0 0 1 12.5 12.5" fill="none" stroke="#ffe7ae" stroke-width="1.4"/><path d="M0 33C10 27 18 37 28 32S42 28 48 32V48H0Z" fill="#612c1e"/><path d="M0 40C12 34 22 43 34 38S44 36 48 38V48H0Z" fill="#0d0b08" stroke="#f2b641"/></g></symbol></svg>
 
 <nav class="nav" id="nav" aria-label="Navigation principale">
   <div class="wrap nav__in">
-    <a class="nav__brand" href="#top" aria-label="ARRAKOR, haut de page"><svg class="mark" viewBox="0 0 48 48" aria-hidden="true"><use href="#mark"/></svg>ARRAKOR</a>
+    <a class="nav__brand" href="#top" aria-label="ARRAKOR, haut de page"><span class="mark"><img src="image.png?v=2" alt="" width="38" height="38"></span>ARRAKOR</a>
     <button class="nav__toggle" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Menu"><i></i><i></i></button>
     <div class="nav__links" id="menu">
       <a href="#mission">Mission</a>
@@ -420,9 +423,10 @@ footer a:hover{color:var(--gold)}
   <canvas class="hero__dust" id="dust" aria-hidden="true"></canvas>
 
   <div class="hero__body">
+    <h1 class="hero__logo"><img src="image.png?v=2" width="1080" height="1080" alt="ARRAKOR, Game of Robots" fetchpriority="high"></h1>
+    <div class="hero__txt">
     <p class="hero__meta"><b>Équipe n°1</b> du Game of Robots 2026</p>
-    <h1 class="display" aria-label="ARRAKOR"><span aria-hidden="true" style="--i:0">A</span><span aria-hidden="true" style="--i:1">R</span><span aria-hidden="true" style="--i:2">R</span><span aria-hidden="true" style="--i:3">A</span><span aria-hidden="true" style="--i:4">K</span><span class="o" aria-hidden="true" style="--i:5"><svg viewBox="0 0 48 48"><defs><clipPath id="mk2"><circle cx="24" cy="24" r="19.5"/></clipPath></defs><circle class="o__ring" cx="24" cy="24" r="22" pathLength="1" fill="none" stroke="#f2b641" stroke-width="2.6"/><g clip-path="url(#mk2)"><rect width="48" height="48" fill="#120c08"/><g class="o__planet"><circle cx="24" cy="29" r="12.5" fill="#dc8a3e"/><path d="M24 16.5a12.5 12.5 0 0 1 12.5 12.5" fill="none" stroke="#ffe7ae" stroke-width="1.6"/></g><path d="M0 33C10 27 18 37 28 32S42 28 48 32V48H0Z" fill="#612c1e"/><path d="M0 40C12 34 22 43 34 38S44 36 48 38V48H0Z" fill="#0d0b08" stroke="#f2b641"/></g></svg></span><span aria-hidden="true" style="--i:6">R</span></h1>
-    <p class="hero__tag">Une équipe. Un robot. Une seule mission.</p>
+    <p class="display hero__tag"><span style="--i:0">Une équipe.</span><span style="--i:1">Un robot.</span><span style="--i:2">Une seule mission.</span></p>
     <p class="hero__when">Du 14 au 18 décembre 2026, à Polytech Angers</p>
 
     <div class="count" id="count" role="group" aria-label="Compte à rebours avant le début du challenge">
@@ -437,6 +441,7 @@ footer a:hover{color:var(--gold)}
     <div class="hero__cta">
       <a class="btn" href="https://www.instagram.com/arra_kor/" target="_blank" rel="noopener">Suivre @arra_kor</a>
       <a class="btn btn--ghost" href="#mission">Découvrir la mission</a>
+    </div>
     </div>
   </div>
 
@@ -704,16 +709,13 @@ footer a:hover{color:var(--gold)}
         <h2 class="display" id="t-part">Nos partenaires</h2>
         <p class="lede">Le challenge existe grâce à eux. Merci de croire en nous.</p>
       </div>
-      <div class="partners">
-        <figure class="partners__img" data-rv="up"><div><img src="image.png" width="379" height="246" alt="Logos des partenaires : Ansys, ADDL, Onepoint, Thales et Polytech Angers" loading="lazy"></div></figure>
-        <ul class="partners__list">
-          <li data-rv="up" style="--i:0"><b>Ansys</b><span>L’éditeur de SCADE, l’outil qui sert à modéliser le comportement du robot.</span></li>
-          <li data-rv="up" style="--i:1"><b>ADDL</b><span>Partenaire Ansys : ingénierie des exigences et simulation.</span></li>
-          <li data-rv="up" style="--i:2"><b>Onepoint</b><span>Partenaire du challenge.</span></li>
-          <li data-rv="up" style="--i:3"><b>Thales</b><span>Partenaire du challenge.</span></li>
-          <li data-rv="up" style="--i:4"><b>Polytech Angers</b><span>L’école d’ingénieurs qui organise le Game of Robots.</span></li>
-        </ul>
-      </div>
+      <ul class="pgrid">
+        <li data-rv="up" style="--i:0"><div class="plaque"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ansys_logo_(2019).svg" alt="Ansys" loading="lazy" decoding="async" referrerpolicy="no-referrer"><span>L’éditeur de SCADE, l’outil qui sert à modéliser le comportement du robot.</span></div></li>
+        <li data-rv="up" style="--i:1"><div class="plaque"><img src="https://www.addl.fr/build/assets/images/addl.ccdf0cee.webp" alt="ADDL" loading="lazy" decoding="async" referrerpolicy="no-referrer"><span>Partenaire Ansys : ingénierie des exigences et simulation.</span></div></li>
+        <li data-rv="up" style="--i:2"><div class="plaque"><img src="https://www.groupeonepoint.com/wp-content/themes/onepoint/Logo_Onepoint_fonce.png" alt="Onepoint" loading="lazy" decoding="async" referrerpolicy="no-referrer"><span>Partenaire du challenge.</span></div></li>
+        <li data-rv="up" style="--i:3"><div class="plaque"><img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Thales_Logo.svg" alt="Thales" loading="lazy" decoding="async" referrerpolicy="no-referrer"><span>Partenaire du challenge.</span></div></li>
+        <li data-rv="up" style="--i:4"><div class="plaque"><img src="https://polytech-angers.fr/skins/polytech/resources/img/svg/polytech_LogoPoytechhorizontal.svg" alt="Polytech Angers" loading="lazy" decoding="async" referrerpolicy="no-referrer"><span>L’école d’ingénieurs qui organise le Game of Robots.</span></div></li>
+      </ul>
     </div>
     <svg class="dune-div dune-div--bot" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0 60C240 8 520 96 780 46S1240 6 1440 52V120H0Z" fill="#dc8a3e"/><path d="M0 84C240 34 520 114 780 70S1240 32 1440 76V120H0Z" fill="#0d0b08"/></svg>
   </section>
@@ -749,7 +751,7 @@ footer a:hover{color:var(--gold)}
 
 <footer>
   <div class="wrap foot">
-    <p class="foot__brand"><svg class="mark" viewBox="0 0 48 48" aria-hidden="true"><use href="#mark"/></svg>ARRAKOR, équipe n°1 du Game of Robots 2026, Polytech Angers.</p>
+    <p class="foot__brand"><span class="mark"><img src="image.png?v=2" alt="" width="38" height="38"></span>ARRAKOR, équipe n°1 du Game of Robots 2026, Polytech Angers.</p>
     <p>Page réalisée par <a href="https://zakariae-arroub.github.io/">Zakariae Arroub</a>.</p>
   </div>
 </footer>
@@ -1078,6 +1080,12 @@ footer a:hover{color:var(--gold)}
       card.addEventListener("pointerleave", function(){ card.style.setProperty("--rx", "0deg"); card.style.setProperty("--ry", "0deg"); });
     });
   }
+
+  /* Partenaires : si un logo ne charge pas, on affiche le nom à la place */
+  $$(".plaque img").forEach(function(im){
+    function swap(){ var b = d.createElement("b"); b.textContent = im.alt; if (im.parentNode) im.parentNode.replaceChild(b, im); }
+    if (im.complete && !im.naturalWidth && im.currentSrc) swap(); else im.addEventListener("error", swap);
+  });
 
   /* Partage de la page */
   var sh = $("#share");
