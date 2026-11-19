@@ -364,8 +364,8 @@ footer a:hover{color:var(--gold)}
 .partners{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(28px,5vw,72px);align-items:center;margin-top:clamp(36px,5vw,60px)}
 @media (max-width:860px){.partners{grid-template-columns:1fr}}
 .partners__img{max-width:430px}
-.partners__img div{overflow:hidden;aspect-ratio:342/220;clip-path:var(--cut)}
-.partners__img img{display:block;width:110.82%;max-width:none;height:auto;margin:-6.43% 0 0 -9.06%;transition:transform .9s var(--ease)}
+.partners__img div{overflow:hidden;aspect-ratio:345/175;clip-path:var(--cut)}
+.partners__img img{display:block;width:109.86%;max-width:none;height:auto;margin:-6.09% 0 0 -8.7%;transition:transform .9s var(--ease)}
 .partners__img:hover img{transform:scale(1.05)}
 .partners__list{border-top:1px solid var(--sable-line)}
 .partners__list li{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:.3rem clamp(14px,3vw,32px);align-items:baseline;padding:clamp(14px,2vw,20px) 0;border-bottom:1px solid var(--sable-line)}
@@ -385,7 +385,7 @@ footer a:hover{color:var(--gold)}
 
 /* Final : la planète se lève quand on arrive */
 .end__sky .planet{transition:transform 1.8s var(--ease),opacity 1.8s ease}
-.js .end__sky:not(.in) .planet{transform:translateY(70px);opacity:.3}
+.js .end:has(.end__in:not(.in)) .planet{transform:translateY(70px);opacity:.3}
 
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
@@ -734,7 +734,7 @@ footer a:hover{color:var(--gold)}
   </section>
 
   <section class="end" aria-labelledby="t-end">
-    <div class="end__sky" data-rv="t" aria-hidden="true"><div class="planet"></div></div>
+    <div class="end__sky" aria-hidden="true"><div class="planet"></div></div>
     <div class="wrap end__in" data-rv="up">
       <h2 class="display end__say" id="t-end"><span>Nous ne venons pas participer.</span><span>Nous venons gagner.</span></h2>
       <p class="end__txt">Les coulisses, le rover et l’équipe sont sur Instagram.</p>
