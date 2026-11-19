@@ -12,6 +12,7 @@
 <meta property="og:description" content="Une équipe. Un robot. Une seule mission. Rendez-vous du 14 au 18 décembre 2026 à Polytech Angers.">
 <meta property="og:url" content="https://zakariae-arroub.github.io/arrakor/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230d0b08'/%3E%3Ccircle cx='32' cy='40' r='22' fill='%23612c1e'/%3E%3Cpath d='M10 40a22 22 0 0 1 44 0' fill='none' stroke='%23f2b641' stroke-width='4'/%3E%3Cpath d='M0 52c16-8 40-8 64 0v12H0z' fill='%230d0b08'/%3E%3C/svg%3E">
+<script>document.documentElement.className="js";</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&family=Michroma&display=swap" rel="stylesheet">
@@ -26,16 +27,19 @@
   --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
   --wrap:1120px;
   --gutter:clamp(20px,5vw,48px);
-  --section:clamp(80px,12vw,152px);
-  --cut:12px;
+  --section:clamp(84px,12vw,156px);
+  --ease:cubic-bezier(.2,.7,.2,1);
+  --cut:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px);
 }
 *,*::before,*::after{box-sizing:border-box}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html{scroll-behavior:smooth;scroll-padding-top:72px;-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--sand-900);color:var(--ink);font:400 1.0625rem/1.65 var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 h1,h2,h3,p,ol,ul,dl,dd,figure{margin:0}
 ol,ul{padding:0;list-style:none}
 a{color:inherit}
-img,svg,canvas{display:block;max-width:100%}
+svg,canvas{display:block;max-width:100%}
+button{font:inherit}
+[hidden]{display:none!important}
 :focus-visible{outline:2px solid var(--amber);outline-offset:3px}
 ::selection{background:var(--gold);color:var(--on-gold)}
 .sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
@@ -46,10 +50,16 @@ img,svg,canvas{display:block;max-width:100%}
 /* Titres : Michroma, toujours en capitales */
 .display{font-family:var(--display);font-weight:400;text-transform:uppercase;letter-spacing:.02em}
 h2.display{font-size:clamp(1.35rem,2.6vw,2.05rem);line-height:1.2;text-wrap:balance}
-.lede{color:var(--ink-muted);max-width:34ch;margin-top:1.1rem}
+.head h2::before{content:"";display:block;width:56px;height:2px;margin-bottom:22px;background:var(--gold);transform-origin:left;transition:transform .9s var(--ease)}
+.js .head[data-rv]:not(.in) h2::before{transform:scaleX(0)}
+.lede{color:var(--ink-muted);max-width:40ch;margin-top:1.1rem}
+
+/* Apparition au défilement */
+[data-rv="up"]{transition:opacity .8s ease calc(var(--i,0)*90ms),transform .8s var(--ease) calc(var(--i,0)*90ms)}
+.js [data-rv="up"]:not(.in){opacity:0;transform:translateY(22px)}
 
 /* Boutons à coins coupés */
-.btn{position:relative;isolation:isolate;display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:.85rem 1.5rem;font:600 .95rem/1.2 var(--sans);text-decoration:none;color:var(--on-gold);background:var(--gold);clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);transition:background-color .18s ease}
+.btn{position:relative;isolation:isolate;display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:.85rem 1.5rem;border:0;font:600 .95rem/1.2 var(--sans);text-decoration:none;color:var(--on-gold);background:var(--gold);cursor:pointer;clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);transition:background-color .18s ease}
 .btn:hover{background:#ffd27a}
 .btn:focus-visible{outline:none;background:var(--ink)}
 .btn--ghost{color:var(--ink);background:var(--ink-muted)}
@@ -59,37 +69,56 @@ h2.display{font-size:clamp(1.35rem,2.6vw,2.05rem);line-height:1.2;text-wrap:bala
 .btn--ghost:focus-visible{background:var(--amber)}
 
 /* ---------- Navigation ---------- */
+.bar{position:fixed;left:0;top:0;z-index:70;width:100%;height:2px;background:var(--gold);transform:scaleX(0);transform-origin:left}
 .nav{position:fixed;inset:0 0 auto 0;z-index:50;transition:background-color .25s ease,border-color .25s ease;border-bottom:1px solid transparent}
-.nav.is-solid{background:rgba(13,11,8,.92);border-bottom-color:var(--line);backdrop-filter:blur(8px)}
+.nav.is-solid,.nav.is-open{background:rgba(13,11,8,.94);border-bottom-color:var(--line);backdrop-filter:blur(8px)}
 .nav__in{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;height:64px}
 .nav__brand{font-family:var(--display);font-size:.95rem;letter-spacing:.22em;color:var(--gold);text-decoration:none}
-.nav__links{display:flex;align-items:center;gap:clamp(1rem,2.4vw,2rem)}
-.nav__links a{font-size:.9rem;font-weight:500;color:var(--ink);text-decoration:none;padding:.4rem 0;border-bottom:1px solid transparent}
-.nav__links a:hover{border-bottom-color:var(--gold)}
+.nav__links{display:flex;align-items:center;gap:clamp(.9rem,2vw,1.8rem)}
+.nav__links a{font-size:.9rem;font-weight:500;color:var(--ink);text-decoration:none;padding:.4rem 0;border-bottom:1px solid transparent;transition:color .2s,border-color .2s}
+.nav__links a:hover,.nav__links a[aria-current]{border-bottom-color:var(--gold);color:var(--gold)}
 .nav__links a.nav__ig{color:var(--gold)}
-@media (max-width:760px){.nav__links a:not(.nav__ig){display:none}}
+.nav__toggle{display:none;position:relative;width:44px;height:44px;margin-right:-10px;padding:0;border:0;background:none;color:var(--gold);cursor:pointer}
+.nav__toggle i{position:absolute;left:11px;right:11px;height:2px;background:currentColor;transition:transform .3s var(--ease),top .3s var(--ease)}
+.nav__toggle i:first-child{top:17px}
+.nav__toggle i:last-child{top:25px}
+.nav.is-open .nav__toggle i{top:21px;transform:rotate(45deg)}
+.nav.is-open .nav__toggle i:last-child{transform:rotate(-45deg)}
+@media (max-width:880px){
+  .nav__toggle{display:block}
+  .nav__links{position:fixed;inset:64px 0 auto 0;flex-direction:column;align-items:stretch;gap:0;padding:4px var(--gutter) 22px;background:rgba(13,11,8,.97);border-bottom:1px solid var(--line);clip-path:inset(0 0 100% 0);visibility:hidden;transition:clip-path .4s var(--ease),visibility 0s .4s}
+  .nav.is-open .nav__links{clip-path:inset(0);visibility:visible;transition:clip-path .4s var(--ease)}
+  .nav__links a{padding:1rem 0;font-size:1.05rem;border-bottom:1px solid var(--line)}
+}
 
-/* ---------- Hero : la planète se lève sur les dunes ---------- */
-.hero{--horizon:clamp(220px,32vh,330px);position:relative;min-height:100svh;display:flex;flex-direction:column;align-items:center;overflow:hidden;background:
-  radial-gradient(70% 380px at 50% calc(100% - var(--horizon)),rgba(255,154,31,.22) 0%,rgba(220,138,62,.10) 40%,transparent 74%),
+/* ---------- Hero : la planète se lève, le rover traverse les dunes ---------- */
+.hero{position:relative;min-height:100svh;display:flex;flex-direction:column;align-items:center;overflow:hidden;background:
+  radial-gradient(80% 520px at 50% 100%,rgba(255,154,31,.2) 0%,rgba(220,138,62,.09) 45%,transparent 76%),
   linear-gradient(180deg,#0d0b08 0%,#120c08 38%,#2a140c 66%,#4a2217 100%)}
+.hero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.14;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E")}
 .hero__dust{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.hero__planet{position:absolute;left:50%;top:calc(100% - var(--horizon));width:max(1100px,124vw);aspect-ratio:1;border-radius:50%;transform:translateX(-50%);
-  background:radial-gradient(120% 46% at 50% 0%,#9a5324 0%,#56281a 16%,#24120b 40%,#0f0a07 68%);
-  box-shadow:0 -1px 0 0 rgba(255,224,160,.95),0 -6px 22px -2px rgba(255,170,70,.8),0 -34px 130px 0 rgba(220,138,62,.4),inset 0 12px 34px -8px rgba(255,190,100,.5)}
-.hero__dunes{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:clamp(130px,20vh,220px)}
-.hero__body{position:relative;z-index:2;width:min(100% - 2*var(--gutter),1200px);margin:0 auto;padding:clamp(100px,14vh,160px) 0 calc(var(--horizon) + clamp(26px,4.5vh,52px));text-align:center}
+.hero__stage{position:relative;flex:1 0 auto;align-self:stretch;min-height:clamp(170px,26vh,330px);margin-top:clamp(22px,4vh,52px)}
+.hero__sky{position:absolute;left:50%;top:0;width:max(1100px,124vw);aspect-ratio:1;transform:translate3d(-50%,calc(var(--sy,0)*.16px),0)}
+.hero__sky::before{content:"";position:absolute;left:50%;top:-110px;width:56%;height:280px;transform:translateX(-50%);background:radial-gradient(50% 50% at 50% 50%,rgba(255,170,70,.34),transparent 70%);animation:breathe 7s ease-in-out infinite}
+.planet{width:100%;height:100%;border-radius:50%;background:radial-gradient(120% 46% at 50% 0%,#9a5324 0%,#56281a 16%,#24120b 40%,#0f0a07 68%);box-shadow:0 -1px 0 0 rgba(255,224,160,.95),0 -6px 22px -2px rgba(255,170,70,.8),0 -34px 130px 0 rgba(220,138,62,.4),inset 0 12px 34px -8px rgba(255,190,100,.5)}
+.hero__ground{position:absolute;left:0;right:0;bottom:-1px;z-index:1;height:clamp(130px,20vh,220px)}
+.hero__dunes{width:100%;height:100%}
+.hero__rover{position:absolute;left:0;top:0;width:76px;height:38px;overflow:visible;will-change:transform}
+.hero__rover .whl g{transform-box:fill-box;transform-origin:center;animation:spin 1.5s linear infinite}
+@media (max-width:640px){.hero__rover{width:56px;height:28px}}
+.hero__body{position:relative;z-index:2;width:min(100% - 2*var(--gutter),1200px);margin:0 auto;padding:clamp(84px,12vh,160px) 0 0;text-align:center;transform:translate3d(0,calc(var(--sy,0)*-.07px),0);opacity:calc(1 - var(--sy,0)/640)}
 .hero__meta{font:600 .78rem/1.4 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);text-wrap:balance}
 .hero__meta b{color:var(--ink);font-weight:600}
-.hero h1{margin-top:clamp(18px,3vh,30px);font-size:clamp(1.8rem,10.2vw,8rem);line-height:1.05;white-space:nowrap;letter-spacing:.16em;text-indent:.16em;
-  background:linear-gradient(180deg,#ffe7ae 0%,#f2b641 46%,#b3741a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.hero h1{margin-top:clamp(18px,3vh,30px);font-size:clamp(1.8rem,min(10.2vw,15.5vh),8rem);line-height:1.05;white-space:nowrap;letter-spacing:.16em;text-indent:.16em}
+.hero h1 span{display:inline-block;text-indent:0;background:linear-gradient(180deg,#ffe7ae 0%,#f2b641 46%,#b3741a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 .hero__tag{margin-top:clamp(18px,3vh,28px);font-size:clamp(1.05rem,2vw,1.35rem);font-weight:500;color:var(--ink);text-wrap:balance}
 .hero__when{margin-top:.5rem;color:var(--ink-muted);text-wrap:balance}
 
 .count{display:inline-grid;grid-template-columns:repeat(4,minmax(64px,104px));margin-top:clamp(24px,4vh,40px);border:1px solid var(--line);background:rgba(13,11,8,.72)}
-.count__cell{padding:14px 8px 12px;border-left:1px solid var(--line)}
+.count__cell{padding:14px 8px 12px;border-left:1px solid var(--line);overflow:hidden}
 .count__cell:first-child{border-left:0}
 .count__n{display:block;font:500 clamp(1.5rem,4.4vw,2.3rem)/1 var(--mono);color:var(--gold);font-variant-numeric:tabular-nums}
+.count__n.tick{animation:tick .32s var(--ease)}
 .count__l{display:block;margin-top:8px;font-size:.72rem;color:var(--ink-muted)}
 .count__note{margin-top:12px;font-size:.88rem;color:var(--ink-muted);text-wrap:balance}
 .count__msg{display:none;margin-top:clamp(28px,5vh,48px);font:500 1.05rem/1.4 var(--mono);color:var(--gold)}
@@ -97,25 +126,25 @@ h2.display{font-size:clamp(1.35rem,2.6vw,2.05rem);line-height:1.2;text-wrap:bala
 .hero.is-live .count__msg,.hero.is-over .count__msg{display:block}
 .hero__cta{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:clamp(22px,3.6vh,34px)}
 
-/* Séquence d'ouverture : une seule, au chargement */
-@media (prefers-reduced-motion:no-preference){
-  .hero__planet{animation:rise 2.2s cubic-bezier(.2,.7,.2,1) both}
-  .hero h1{animation:reveal 1.4s .35s cubic-bezier(.2,.7,.2,1) both}
-  .hero__meta,.hero__tag,.hero__when,.count,.count__note,.count__msg,.hero__cta{animation:fade .9s 1.1s ease both}
-  @keyframes rise{from{transform:translate(-50%,9%);opacity:.25}to{transform:translate(-50%,0);opacity:1}}
-  @keyframes reveal{from{opacity:0;letter-spacing:.02em;text-indent:.02em}to{opacity:1;letter-spacing:.16em;text-indent:.16em}}
-  @keyframes fade{from{opacity:0}to{opacity:1}}
-}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-@media (forced-colors:active){.hero h1{background:none;color:CanvasText;-webkit-text-fill-color:CanvasText}}
+@keyframes rise{from{transform:translateY(9%);opacity:.25}to{transform:none;opacity:1}}
+@keyframes letter{from{opacity:0;transform:translateY(.4em) scale(1.12);filter:blur(8px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes breathe{50%{opacity:.4}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes tick{from{transform:translateY(-55%);opacity:0}to{transform:none;opacity:1}}
+@keyframes ticker{to{transform:translateX(calc(var(--w,50%)*-1))}}
+@keyframes pulse{50%{opacity:.35}}
+.hero .planet{animation:rise 2.2s var(--ease) both}
+.hero h1 span{animation:letter 1s var(--ease) calc(.3s + var(--i)*85ms) both}
+.hero__meta,.hero__tag,.hero__when,.count,.count__note,.count__msg,.hero__cta{animation:fade .9s 1.2s ease both}
 
-/* ---------- Bandeau chiffres ---------- */
-.facts{border-block:1px solid var(--line);background:var(--sand-800)}
-.facts ul{display:grid;grid-template-columns:repeat(3,1fr)}
-.facts li{padding:clamp(20px,3.4vw,34px) clamp(8px,2vw,24px);border-left:1px solid var(--line);text-align:center}
-.facts li:first-child{border-left:0}
-.facts b{display:block;font:500 clamp(1.7rem,4.6vw,2.9rem)/1 var(--mono);color:var(--gold)}
-.facts span{display:block;margin-top:10px;font-size:.92rem;color:var(--ink-muted)}
+/* ---------- Bandeau défilant ---------- */
+.ticker{overflow:hidden;border-block:1px solid var(--line);background:var(--sand-800);padding:17px 0}
+.ticker__track{display:flex;width:max-content}
+.ticker__set{display:flex;flex:none}
+.ticker__set span{padding:0 22px;font-family:var(--display);font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;color:var(--ink-muted)}
+.ticker__set span::after{content:"";display:inline-block;width:7px;height:7px;margin-left:44px;background:var(--gold);transform:translateY(-1px) rotate(45deg)}
+.ticker.is-on .ticker__track{animation:ticker 36s linear infinite}
 
 /* ---------- Sections ---------- */
 section{scroll-margin-top:72px}
@@ -124,18 +153,7 @@ section{scroll-margin-top:72px}
 .split{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:clamp(28px,6vw,88px);align-items:start}
 @media (max-width:860px){.split{grid-template-columns:1fr}}
 
-/* Mission */
-.mission__say{font-size:clamp(1.5rem,5vw,3.5rem);line-height:1.22;letter-spacing:.02em}
-.mission__say span{display:block}
-.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,4vw,56px);margin-top:clamp(44px,7vw,88px)}
-.pillars li{padding-top:20px;border-top:1px solid var(--gold)}
-.pillars h3{font:600 1.15rem/1.3 var(--sans)}
-.pillars p{margin-top:.5rem;color:var(--ink-muted)}
-@media (max-width:720px){.pillars{grid-template-columns:1fr}}
-
-/* Rover */
-.rover{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(28px,5vw,72px);align-items:center}
-@media (max-width:900px){.rover{grid-template-columns:1fr}.rover__txt{order:-1}}
+/* Cadre à équerres dorées */
 .plan{--b:22px;--t:2px;padding:clamp(10px,2vw,22px);background:
   linear-gradient(var(--gold),var(--gold)) left top/var(--b) var(--t) no-repeat,
   linear-gradient(var(--gold),var(--gold)) left top/var(--t) var(--b) no-repeat,
@@ -147,20 +165,76 @@ section{scroll-margin-top:72px}
   linear-gradient(var(--gold),var(--gold)) right bottom/var(--t) var(--b) no-repeat,
   var(--sand-800)}
 .plan svg{width:100%;height:auto}
-.plan figcaption{margin-top:10px;font:500 .8rem/1.4 var(--mono);color:var(--ink-muted)}
+.plan figcaption{margin-top:10px;font:500 .8rem/1.5 var(--mono);color:var(--ink-muted)}
+
+/* Mission */
+.mission__say{font-size:clamp(1.5rem,5vw,3.5rem);line-height:1.22;letter-spacing:.02em}
+.mission__say span{display:block;overflow:hidden}
+.mission__say i{display:block;font-style:normal;transition:transform 1.1s var(--ease) calc(var(--i)*150ms)}
+.js .mission__say:not(.in) i{transform:translateY(108%)}
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(22px,4vw,56px);margin-top:clamp(44px,7vw,88px)}
+.pillars li{padding-top:22px;border-top:1px solid var(--gold)}
+.pillars h3{margin-top:18px;font:600 1.15rem/1.3 var(--sans)}
+.pillars p{margin-top:.5rem;color:var(--ink-muted)}
+.pillars p.pillars__punch{color:var(--ink);font-weight:500}
+@media (max-width:720px){.pillars{grid-template-columns:1fr}}
+.glyph{width:56px;height:56px;fill:none;stroke:var(--gold);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.glyph .fillg{fill:var(--gold);stroke:none}
+.g-speed .needle{transform-origin:28px 38px;transform:rotate(48deg);transition:transform 1.5s cubic-bezier(.3,1.5,.5,1) .4s}
+.js [data-rv]:not(.in) .needle{transform:rotate(-62deg)}
+.g-aim .ring{transform-origin:28px 28px;transition:transform .9s var(--ease) .4s,opacity .5s ease .4s}
+.js [data-rv]:not(.in) .ring{transform:scale(2.1);opacity:0}
+.g-aim .dot{transition:opacity .2s ease 1.2s}
+.js [data-rv]:not(.in) .dot{opacity:0}
+.g-loop .arc,.g-loop .chk{stroke-dasharray:1;transition:stroke-dashoffset 1.2s ease .4s}
+.g-loop .chk{transition-duration:.5s;transition-delay:1.4s}
+.js [data-rv]:not(.in) .arc,.js [data-rv]:not(.in) .chk{stroke-dashoffset:1}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);margin-top:clamp(48px,7vw,88px);border:1px solid var(--line);background:var(--sand-800)}
+.facts li{padding:clamp(20px,3.4vw,34px) clamp(8px,2vw,24px);border-left:1px solid var(--line);text-align:center}
+.facts li:first-child{border-left:0}
+.facts b{display:block;font:500 clamp(1.7rem,4.6vw,2.9rem)/1 var(--mono);color:var(--gold);font-variant-numeric:tabular-nums}
+.facts span{display:block;margin-top:10px;font-size:.92rem;color:var(--ink-muted)}
+
+/* Parcours : animation de principe */
+.arena{margin-top:clamp(32px,5vw,56px)}
+.ar-ob{fill:#241d15;stroke:#3a2f22;stroke-width:1.5;transition:stroke .3s ease,fill .3s ease}
+.ar-ob.is-seen{stroke:#f2b641;fill:#2f2418}
+.ar-plan{fill:none;stroke:#b3a387;stroke-opacity:.45;stroke-dasharray:3 7}
+.ar-trail{fill:none;stroke:#f2b641;stroke-width:2.5;stroke-linecap:round}
+.hud{display:grid;grid-template-columns:repeat(4,1fr);margin-top:clamp(10px,2vw,22px);border:1px solid var(--line);background:var(--sand-900)}
+.hud div{padding:12px 16px;border-left:1px solid var(--line)}
+.hud div:first-child{border-left:0}
+.hud dt{font-size:.8rem;color:var(--ink-muted)}
+.hud dd{margin-top:4px;font:500 1rem/1.3 var(--mono);color:var(--gold);font-variant-numeric:tabular-nums}
+@media (max-width:640px){.hud{grid-template-columns:repeat(2,1fr)}.hud div:nth-child(3){border-left:0}.hud div:nth-child(n+3){border-top:1px solid var(--line)}}
+.verbs{margin-top:clamp(28px,4vw,44px);font-size:clamp(1rem,2.4vw,1.5rem);line-height:1.5;color:var(--gold);text-align:center;text-wrap:balance}
+
+/* Rover */
+.rover{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(28px,5vw,72px);align-items:center}
+@media (max-width:900px){.rover{grid-template-columns:1fr}.rover__txt{order:-1}}
+.dr{stroke-dasharray:1;transition:stroke-dashoffset 1.3s ease var(--d,0s),fill-opacity .6s ease calc(var(--d,0s) + .8s)}
+.js .plan:not(.in) .dr{stroke-dashoffset:1;fill-opacity:0}
+.p-w,.p-c,.p-l{transition:stroke .25s ease,filter .25s ease}
+.plan[data-hl="roues"] .p-w,.plan[data-hl="chassis"] .p-c{stroke:#ffe7ae;filter:drop-shadow(0 0 6px rgba(242,182,65,.9))}
+.plan[data-hl="led"] .p-l{filter:drop-shadow(0 0 5px #ff9a1f) drop-shadow(0 0 12px #ff9a1f)}
+.p-beam{animation:pulse 3.2s ease-in-out infinite}
 .rover__txt p{margin-top:1.1rem;color:var(--ink-muted);max-width:44ch}
 .rover__txt p.rover__punch{color:var(--ink);font-weight:600;font-size:1.2rem}
+.rover__txt p.rover__hint{font-size:.88rem}
 .spec{margin-top:1.8rem;border-top:1px solid var(--line)}
-.spec div{display:grid;grid-template-columns:8.5rem 1fr;gap:1rem;padding:.75rem 0;border-bottom:1px solid var(--line)}
+.spec div{display:grid;grid-template-columns:8.5rem 1fr;gap:1rem;padding:.75rem 0;border-bottom:1px solid var(--line);transition:border-color .25s ease}
+.spec div:hover,.spec div:focus-visible{border-bottom-color:var(--gold)}
 .spec dt{font-size:.92rem;color:var(--ink-muted)}
 .spec dd{font:500 .95rem/1.5 var(--mono)}
 
 /* Méthode : une vraie séquence, donc numérotée */
 .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(18px,3vw,40px);margin-top:clamp(36px,6vw,64px);counter-reset:step}
 .steps li{position:relative;padding-top:34px;counter-increment:step}
-.steps li::before{content:"";position:absolute;left:0;right:calc(-1*clamp(18px,3vw,40px));top:6px;height:1px;background:var(--line)}
+.steps li::before{content:"";position:absolute;left:0;right:calc(-1*clamp(18px,3vw,40px));top:6px;height:1px;background:linear-gradient(var(--gold),var(--gold)) no-repeat 0 0/100% 100%,var(--line);transition:background-size .55s linear calc(var(--i)*.5s + .2s)}
+.js .steps:not(.in) li::before{background-size:0 100%,auto}
 .steps li:last-child::before{right:0}
-.steps li::after{content:"";position:absolute;left:0;top:0;width:13px;height:13px;border-radius:50%;background:var(--sand-900);border:2px solid var(--gold)}
+.steps li::after{content:"";position:absolute;left:0;top:0;width:13px;height:13px;border-radius:50%;background:var(--gold);border:2px solid var(--gold);transition:background-color .3s ease calc(var(--i)*.5s)}
+.js .steps:not(.in) li::after{background:var(--sand-900)}
 .steps__n{font:500 .9rem/1 var(--mono);color:var(--gold)}
 .steps__n::before{content:"Étape " counter(step)}
 .steps h3{margin-top:.6rem;font:600 1.15rem/1.3 var(--sans)}
@@ -169,28 +243,65 @@ section{scroll-margin-top:72px}
   .steps{grid-template-columns:1fr;gap:0}
   .steps li{padding:0 0 30px 34px}
   .steps li::before{left:6px;right:auto;top:6px;bottom:-6px;width:1px;height:auto}
+  .js .steps:not(.in) li::before{background-size:100% 0,auto}
   .steps li:last-child::before{display:none}
   .steps li:last-child{padding-bottom:0}
 }
-.goal{position:relative;isolation:isolate;margin-top:clamp(36px,6vw,64px);padding:clamp(20px,3vw,30px) clamp(20px,3.4vw,36px);background:var(--gold);clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut))}
+.goal{position:relative;isolation:isolate;display:flex;align-items:center;gap:clamp(16px,3vw,28px);margin-top:clamp(36px,6vw,64px);padding:clamp(18px,3vw,28px) clamp(20px,3.4vw,36px);background:var(--gold);clip-path:var(--cut)}
 .goal::before{content:"";position:absolute;inset:1px;z-index:-1;background:var(--sand-800);clip-path:inherit}
 .goal p{font-size:clamp(1.05rem,2vw,1.3rem);font-weight:500}
-.goal__n{color:var(--gold);white-space:nowrap}
+.goal p span{display:block;font-size:.95rem;font-weight:400;color:var(--ink-muted)}
+.goal p span.goal__n{display:inline;font-size:inherit;font-weight:inherit;color:var(--gold);white-space:nowrap}
 .goal b{font:500 1.15em/1 var(--mono)}
+.ring{flex:none;width:clamp(64px,10vw,92px);height:auto;fill:none;stroke-width:6}
+.ring__bg{stroke:var(--line)}
+.ring__fg{stroke:var(--gold);stroke-dasharray:100;stroke-dashoffset:10;transform:rotate(-90deg);transform-origin:48px 48px;transition:stroke-dashoffset 1.5s ease .2s}
+.js .goal:not(.in) .ring__fg{stroke-dashoffset:100}
 
-/* Listes à filets : savoir-faire et équipage */
+/* Équipage */
+.crew{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(14px,2vw,22px);margin-top:clamp(36px,5vw,60px)}
+.crew li{display:flex;flex:1 1 196px;max-width:270px}
+@media (max-width:1100px){.crew li{flex-basis:30%}}
+@media (max-width:700px){.crew li{flex-basis:45%}}
+@media (max-width:460px){.crew li{flex-basis:100%;max-width:none}}
+.card{--rx:0deg;--ry:0deg;position:relative;isolation:isolate;flex:1;padding:24px 20px 26px;background:var(--line);clip-path:var(--cut);transform:perspective(800px) rotateX(var(--rx)) rotateY(var(--ry));transition:transform .3s ease,background-color .3s ease}
+.card::before{content:"";position:absolute;inset:1px;z-index:-2;background:linear-gradient(180deg,#1d1710 0%,#120e0a 100%);clip-path:inherit}
+.card::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(115deg,transparent 36%,rgba(255,214,140,.17) 50%,transparent 64%);transform:translateX(-130%);transition:transform .9s ease}
+.card:hover{background:var(--gold)}
+.card:hover::after{transform:translateX(130%)}
+.card__disc{display:grid;place-items:center;width:76px;height:76px;border-radius:50%;background:radial-gradient(120% 90% at 50% 0%,#dc8a3e 0%,#8a4420 40%,#2a140c 80%);box-shadow:0 -1px 0 rgba(255,224,160,.9),0 -8px 26px -6px rgba(255,170,70,.75);font-family:var(--display);font-size:1.05rem;letter-spacing:.06em;color:#ffe7ae}
+.card__tag{margin-top:20px;font:500 .78rem/1.2 var(--mono);color:var(--ink-muted)}
+.card__name{margin-top:8px;min-height:2.7em;font-size:.98rem;line-height:1.35;color:var(--gold)}
+.card__role{margin-top:8px;font-weight:600;font-size:.98rem;line-height:1.35}
+.card__txt{margin-top:8px;font-size:.93rem;line-height:1.55;color:var(--ink-muted)}
+
+/* Listes à filets */
 .rows{border-top:1px solid var(--line)}
 .rows > *{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:.4rem clamp(16px,3vw,40px);align-items:baseline;padding:clamp(18px,2.6vw,26px) 0;border-bottom:1px solid var(--line)}
-.rows .rows__k{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;font-size:clamp(.95rem,1.5vw,1.1rem);line-height:1.4}
-.rows .rows__v{color:var(--ink-muted)}
-.crew .rows__k{color:var(--gold)}
-.crew .rows__v strong{display:block;font-weight:600;color:var(--ink)}
+.rows dt{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;font-size:clamp(.95rem,1.5vw,1.1rem);line-height:1.4}
+.rows dd{color:var(--ink-muted)}
 @media (max-width:620px){.rows > *{grid-template-columns:1fr}}
 
-/* Rendez-vous */
-.when__date{font-size:clamp(1.5rem,4.6vw,3.2rem);line-height:1.2;color:var(--gold)}
+/* Challenge */
+.when__date{font-size:clamp(1.3rem,3.1vw,2.3rem);line-height:1.25;color:var(--gold)}
 .when__place{margin-top:.8rem;font-size:1.2rem;font-weight:600}
 .when p.when__txt{margin-top:1.1rem;color:var(--ink-muted);max-width:56ch}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:1.4rem}
+.chips li{padding:.45rem .85rem;font-size:.9rem;color:var(--ink);background:var(--sand-700);clip-path:polygon(7px 0,100% 0,100% calc(100% - 7px),calc(100% - 7px) 100%,0 100%,0 7px)}
+.tl{display:none;position:relative;margin-top:clamp(36px,5vw,56px);padding-top:50px}
+.js .tl{display:block}
+.tl__track{position:relative;height:6px;background:var(--sand-700)}
+.tl__track::before{content:"";position:absolute;left:0;top:0;bottom:0;width:calc(var(--f,0)*100%);background:linear-gradient(90deg,#7a4a16,var(--gold));transition:width 1.6s var(--ease) .2s}
+.js .tl:not(.in) .tl__track::before{width:0}
+.tl__week{position:absolute;left:87.5%;right:0;top:-4px;bottom:-4px;border:1px solid var(--gold);background:rgba(242,182,65,.16)}
+.tl__now{position:absolute;left:calc(var(--f,0)*100%);top:0;transform:translateX(-50%);font:500 .82rem/1 var(--mono);white-space:nowrap}
+.tl__now::after{content:"";position:absolute;left:50%;top:22px;width:1px;height:24px;background:var(--amber)}
+.tl.is-early .tl__now{transform:none}
+.tl.is-early .tl__now::after{left:0}
+.tl.is-late .tl__now{transform:translateX(-100%)}
+.tl.is-late .tl__now::after{left:100%}
+.tl__ends{display:flex;justify-content:space-between;gap:1rem;margin-top:14px;font:500 .8rem/1.4 var(--mono);color:var(--ink-muted)}
+.tl__ends span:last-child{text-align:right;color:var(--gold)}
 .dates{margin-top:clamp(28px,4vw,44px);border-top:1px solid var(--line)}
 .dates li{display:grid;grid-template-columns:11rem 1fr;gap:1rem;padding:.9rem 0;border-bottom:1px solid var(--line)}
 .dates time{font:500 .95rem/1.6 var(--mono);color:var(--ink)}
@@ -198,32 +309,42 @@ section{scroll-margin-top:72px}
 @media (max-width:520px){.dates li{grid-template-columns:1fr;gap:.1rem}}
 
 /* Final : rappel de l'horizon */
-.end{position:relative;overflow:hidden;padding:clamp(96px,15vw,190px) 0 clamp(190px,26vw,330px);text-align:center;border-top:1px solid var(--line);background:linear-gradient(180deg,#0d0b08 0%,#150d09 55%,#3a1b12 100%)}
-.end__planet{position:absolute;left:50%;top:calc(100% - clamp(110px,15vw,200px));width:max(900px,110vw);aspect-ratio:1;border-radius:50%;transform:translateX(-50%);background:radial-gradient(120% 46% at 50% 0%,#9a5324 0%,#56281a 16%,#24120b 40%,#0f0a07 68%);box-shadow:0 -1px 0 0 rgba(255,224,160,.9),0 -6px 22px -2px rgba(255,170,70,.7),0 -30px 110px 0 rgba(220,138,62,.35)}
+.end{position:relative;overflow:hidden;padding:clamp(96px,15vw,190px) 0 clamp(200px,27vw,340px);text-align:center;border-top:1px solid var(--line);background:linear-gradient(180deg,#0d0b08 0%,#150d09 55%,#3a1b12 100%)}
+.end__sky{position:absolute;left:50%;top:calc(100% - clamp(110px,15vw,200px));width:max(900px,110vw);aspect-ratio:1;transform:translateX(-50%)}
 .end__in{position:relative;z-index:1}
 .end__say{font-size:clamp(1.3rem,4.2vw,2.9rem);line-height:1.3}
 .end__say span{display:block}
 .end p.end__txt{margin:1.4rem auto 0;color:var(--ink-muted);max-width:44ch}
-.end .btn{margin-top:2rem}
+.end__cta{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:2rem}
+.end p.end__tags{margin-top:1.6rem;font:500 .85rem/1.6 var(--mono);color:var(--ink-muted)}
 
 footer{border-top:1px solid var(--line);background:var(--sand-900);padding:28px 0 40px;color:var(--ink-muted);font-size:.9rem}
 .foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.6rem 2rem}
 footer a{color:var(--ink);text-underline-offset:3px}
 footer a:hover{color:var(--gold)}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important}
+}
+@media (forced-colors:active){.hero h1 span{background:none;color:CanvasText;-webkit-text-fill-color:CanvasText}}
 </style>
 </head>
 <body>
 <a class="skip" href="#mission">Aller au contenu</a>
+<div class="bar" id="bar" aria-hidden="true"></div>
 
 <nav class="nav" id="nav" aria-label="Navigation principale">
   <div class="wrap nav__in">
     <a class="nav__brand" href="#top" aria-label="ARRAKOR, haut de page">ARRAKOR</a>
-    <div class="nav__links">
+    <button class="nav__toggle" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Menu"><i></i><i></i></button>
+    <div class="nav__links" id="menu">
       <a href="#mission">Mission</a>
+      <a href="#parcours">Parcours</a>
       <a href="#rover">Rover</a>
       <a href="#methode">Méthode</a>
       <a href="#equipe">Équipe</a>
-      <a href="#rendez-vous">Rendez-vous</a>
+      <a href="#challenge">Challenge</a>
       <a class="nav__ig" href="https://www.instagram.com/arra_kor/" target="_blank" rel="noopener">Instagram</a>
     </div>
   </div>
@@ -231,18 +352,10 @@ footer a:hover{color:var(--gold)}
 
 <header class="hero" id="top">
   <canvas class="hero__dust" id="dust" aria-hidden="true"></canvas>
-  <div class="hero__planet" aria-hidden="true"></div>
-  <svg class="hero__dunes" viewBox="0 0 1440 320" preserveAspectRatio="none" aria-hidden="true">
-    <path d="M0,200 C180,140 360,112 560,164 C760,216 900,104 1120,124 C1280,139 1380,186 1440,164 L1440,320 L0,320 Z" fill="#1c120c"/>
-    <path d="M0,200 C180,140 360,112 560,164 C760,216 900,104 1120,124 C1280,139 1380,186 1440,164" fill="none" stroke="#dc8a3e" stroke-opacity=".55" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
-    <path d="M0,248 C220,198 420,258 640,228 C860,198 1040,248 1220,213 C1320,194 1400,218 1440,230 L1440,320 L0,320 Z" fill="#130d09"/>
-    <path d="M0,290 C240,250 520,300 760,275 C1000,250 1220,292 1440,268 L1440,320 L0,320 Z" fill="#0d0b08"/>
-    <path d="M0,290 C240,250 520,300 760,275 C1000,250 1220,292 1440,268" fill="none" stroke="#f2b641" stroke-opacity=".4" stroke-width="1" vector-effect="non-scaling-stroke"/>
-  </svg>
 
   <div class="hero__body">
     <p class="hero__meta"><b>Équipe n°1</b> du Game of Robots 2026</p>
-    <h1 class="display">Arrakor</h1>
+    <h1 class="display" aria-label="ARRAKOR"><span aria-hidden="true" style="--i:0">A</span><span aria-hidden="true" style="--i:1">R</span><span aria-hidden="true" style="--i:2">R</span><span aria-hidden="true" style="--i:3">A</span><span aria-hidden="true" style="--i:4">K</span><span aria-hidden="true" style="--i:5">O</span><span aria-hidden="true" style="--i:6">R</span></h1>
     <p class="hero__tag">Une équipe. Un robot. Une seule mission.</p>
     <p class="hero__when">Du 14 au 18 décembre 2026, à Polytech Angers</p>
 
@@ -260,131 +373,235 @@ footer a:hover{color:var(--gold)}
       <a class="btn btn--ghost" href="#mission">Découvrir la mission</a>
     </div>
   </div>
+
+  <div class="hero__stage" aria-hidden="true">
+    <div class="hero__sky"><div class="planet"></div></div>
+    <div class="hero__ground" id="ground">
+      <svg class="hero__dunes" viewBox="0 0 1440 320" preserveAspectRatio="none">
+        <path d="M0,200 C180,140 360,112 560,164 C760,216 900,104 1120,124 C1280,139 1380,186 1440,164 L1440,320 L0,320 Z" fill="#1c120c"/>
+        <path id="ridge" d="M0,200 C180,140 360,112 560,164 C760,216 900,104 1120,124 C1280,139 1380,186 1440,164" fill="none" stroke="#dc8a3e" stroke-opacity=".55" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+        <path d="M0,248 C220,198 420,258 640,228 C860,198 1040,248 1220,213 C1320,194 1400,218 1440,230 L1440,320 L0,320 Z" fill="#130d09"/>
+        <path d="M0,290 C240,250 520,300 760,275 C1000,250 1220,292 1440,268 L1440,320 L0,320 Z" fill="#0d0b08"/>
+        <path d="M0,290 C240,250 520,300 760,275 C1000,250 1220,292 1440,268" fill="none" stroke="#f2b641" stroke-opacity=".4" stroke-width="1" vector-effect="non-scaling-stroke"/>
+      </svg>
+      <svg class="hero__rover" id="hrover" viewBox="0 0 96 48">
+        <path d="M86 25 L156 9 V42Z" fill="url(#beam)"/>
+        <g fill="#0d0b08" stroke="#f2b641" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round">
+          <path d="M40 14V4M34 4H48"/>
+          <path d="M18 30 L12 38M46 30V38M76 30 L82 38"/>
+          <path d="M12 28 L20 14 H68 L84 21 V30 H12Z"/>
+        </g>
+        <g class="whl" fill="#0d0b08" stroke="#f2b641" stroke-width="1.3">
+          <g><circle cx="13" cy="39.5" r="7.5"/><path d="M13 33.5v12M7 39.5h12"/></g>
+          <g><circle cx="46" cy="39.5" r="7.5"/><path d="M46 33.5v12M40 39.5h12"/></g>
+          <g><circle cx="81" cy="39.5" r="7.5"/><path d="M81 33.5v12M75 39.5h12"/></g>
+        </g>
+        <rect x="83" y="22" width="3.5" height="6" fill="#ff9a1f"/>
+      </svg>
+    </div>
+  </div>
 </header>
 
-<main>
-  <div class="facts">
-    <ul class="wrap">
-      <li><b>13</b><span>équipes en lice</span></li>
-      <li><b>5</b><span>jours de challenge</span></li>
-      <li><b>6</b><span>roues sous le rover</span></li>
-    </ul>
+<div class="ticker" id="ticker" aria-hidden="true">
+  <div class="ticker__track">
+    <div class="ticker__set"><span>Vitesse maîtrisée</span><span>Précision</span><span>Fiabilité</span><span>Forgés par l’innovation</span><span>Zéro collision</span><span>Zéro blocage</span><span>Zéro excuse</span></div>
   </div>
+</div>
 
+<main>
   <section class="block" id="mission" aria-labelledby="t-mission">
     <div class="wrap">
       <h2 class="sr-only" id="t-mission">Notre mission</h2>
-      <p class="display mission__say"><span>Un parcours réussi.</span><span>Sans collision.</span><span>Sans blocage.</span></p>
+      <p class="display mission__say" data-rv="t"><span><i style="--i:0">Un parcours réussi.</i></span><span><i style="--i:1">Sans collision.</i></span><span><i style="--i:2">Sans blocage.</i></span></p>
       <ul class="pillars">
-        <li><h3>Vitesse maîtrisée</h3><p>La vitesse fait avancer.</p></li>
-        <li><h3>Précision</h3><p>La précision évite les erreurs.</p></li>
-        <li><h3>Fiabilité</h3><p>La fiabilité mène à l’arrivée.</p></li>
+        <li data-rv="up" style="--i:0">
+          <svg class="glyph g-speed" viewBox="0 0 56 56" aria-hidden="true"><path d="M8 38a20 20 0 1 1 40 0"/><path class="needle" d="M28 38V17"/><circle class="fillg" cx="28" cy="38" r="2.6"/></svg>
+          <h3>Vitesse maîtrisée</h3>
+          <p class="pillars__punch">La vitesse fait avancer.</p>
+          <p>Aller vite, mais jamais plus vite que ce que le rover sait contrôler.</p>
+        </li>
+        <li data-rv="up" style="--i:1">
+          <svg class="glyph g-aim" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="20"/><path d="M28 4v10M28 42v10M4 28h10M42 28h10"/><circle class="ring" cx="28" cy="28" r="9"/><circle class="dot fillg" cx="28" cy="28" r="2.6"/></svg>
+          <h3>Précision</h3>
+          <p class="pillars__punch">La précision évite les erreurs.</p>
+          <p>Suivre la trajectoire prévue, au plus près.</p>
+        </li>
+        <li data-rv="up" style="--i:2">
+          <svg class="glyph g-loop" viewBox="0 0 56 56" aria-hidden="true"><circle class="arc" cx="28" cy="28" r="20" pathLength="1"/><path class="chk" d="M19 29l6 6 12-13" pathLength="1"/></svg>
+          <h3>Fiabilité</h3>
+          <p class="pillars__punch">La fiabilité mène à l’arrivée.</p>
+          <p>Refaire le même parcours, essai après essai, avec le même résultat.</p>
+        </li>
       </ul>
+      <ul class="facts" data-rv="up">
+        <li><b data-count="13">13</b><span>équipes en lice</span></li>
+        <li><b data-count="5">5</b><span>jours de challenge</span></li>
+        <li><b data-count="6">6</b><span>roues sous le rover</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block" id="parcours" aria-labelledby="t-parcours">
+    <div class="wrap">
+      <div class="head" data-rv="up">
+        <h2 class="display" id="t-parcours">Zéro collision. Zéro blocage.</h2>
+        <p class="lede">Ce que le rover doit réussir : lire le terrain, choisir sa trajectoire et la tenir jusqu’à l’arrivée.</p>
+      </div>
+      <figure class="plan arena" data-rv="up">
+        <svg id="arena" viewBox="0 0 800 400" role="img" aria-labelledby="ar-t ar-d">
+          <title id="ar-t">Animation de principe : le rover traverse un parcours d’obstacles</title>
+          <desc id="ar-d">Un petit rover part de la gauche, contourne six obstacles en suivant une trajectoire en S et atteint l’arrivée à droite sans rien toucher.</desc>
+          <defs>
+            <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="#3a2f22" stroke-width=".7"/></pattern>
+            <pattern id="tread" width="9" height="34" patternUnits="userSpaceOnUse"><rect width="9" height="34" fill="#0d0b08"/><path d="M4.5 5V29" stroke="#f2b641" stroke-opacity=".5" stroke-width="1.4"/><animateTransform attributeName="patternTransform" type="translate" from="0 0" to="-9 0" dur=".8s" repeatCount="indefinite"/></pattern>
+            <filter id="glow" filterUnits="userSpaceOnUse" x="490" y="160" width="80" height="100"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <linearGradient id="beam" x1="0" x2="1"><stop offset="0" stop-color="#ff9a1f" stop-opacity=".3"/><stop offset="1" stop-color="#ff9a1f" stop-opacity="0"/></linearGradient>
+            <path id="ar-path" d="M60 310 C170 310 190 110 300 110 C400 110 400 290 500 290 C600 290 620 100 740 100"/>
+            <path id="ob" d="M-25 -30H25L35 -20V20L25 30H-25L-35 20V-20Z"/>
+          </defs>
+          <rect width="800" height="400" fill="url(#grid)" opacity=".6"/>
+          <circle cx="60" cy="310" r="22" fill="none" stroke="#b3a387" stroke-dasharray="4 5"/>
+          <g stroke="#f2b641" stroke-width="2"><path d="M740 64V136" stroke-dasharray="5 5"/><circle cx="740" cy="62" r="4" fill="#f2b641"/><circle cx="740" cy="138" r="4" fill="#f2b641"/></g>
+          <use href="#ob" class="ar-ob" x="110" y="150" data-x="110" data-y="150"/>
+          <use href="#ob" class="ar-ob" x="270" y="270" data-x="270" data-y="270"/>
+          <use href="#ob" class="ar-ob" x="350" y="310" data-x="350" data-y="310"/>
+          <use href="#ob" class="ar-ob" x="460" y="130" data-x="460" data-y="130"/>
+          <use href="#ob" class="ar-ob" x="560" y="140" data-x="560" data-y="140"/>
+          <use href="#ob" class="ar-ob" x="690" y="280" data-x="690" data-y="280"/>
+          <use href="#ar-path" class="ar-plan"/>
+          <use href="#ar-path" class="ar-trail" id="ar-trail"/>
+          <g id="ar-bot" transform="translate(740 100)">
+            <g id="ar-cone"><path d="M16 0 L120 -36 A126 126 0 0 1 120 36Z" fill="url(#beam)"/></g>
+            <g fill="#0d0b08" stroke="#f2b641" stroke-width="1.3"><rect x="-20" y="-17" width="11" height="6" rx="1.5"/><rect x="-5" y="-17" width="11" height="6" rx="1.5"/><rect x="10" y="-17" width="11" height="6" rx="1.5"/><rect x="-20" y="11" width="11" height="6" rx="1.5"/><rect x="-5" y="11" width="11" height="6" rx="1.5"/><rect x="10" y="11" width="11" height="6" rx="1.5"/><path d="M-22 -10H14L22 -4V4L14 10H-22Z" fill="#17130e"/></g>
+            <rect x="21" y="-4" width="3" height="8" fill="#ff9a1f"/>
+          </g>
+        </svg>
+        <dl class="hud" aria-hidden="true">
+          <div><dt>État</dt><dd id="ar-state">Parcours réussi</dd></div>
+          <div><dt>Progression</dt><dd id="ar-prog">100 %</dd></div>
+          <div><dt>Collisions</dt><dd>0</dd></div>
+          <div><dt>Blocages</dt><dd>0</dd></div>
+        </dl>
+        <figcaption>Animation de principe : elle illustre notre objectif, pas des mesures réelles.</figcaption>
+      </figure>
+      <p class="display verbs" data-rv="up">Il scanne. Il comprend. Il décide.</p>
     </div>
   </section>
 
   <section class="block" id="rover" aria-labelledby="t-rover">
     <div class="wrap rover">
-      <figure class="plan">
+      <figure class="plan" id="plan" data-rv="up">
         <svg viewBox="84 56 632 344" role="img" aria-labelledby="rv-t rv-d">
           <title id="rv-t">Schéma de principe du rover ARRAKOR, vu de dessus</title>
           <desc id="rv-d">Un châssis à pans coupés porté par six roues, trois de chaque côté, avec une barre de LED ambre à l’avant.</desc>
-          <defs>
-            <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="#3a2f22" stroke-width=".7"/></pattern>
-            <pattern id="tread" width="9" height="34" patternUnits="userSpaceOnUse"><rect width="9" height="34" fill="#0d0b08"/><path d="M4.5 5V29" stroke="#f2b641" stroke-opacity=".5" stroke-width="1.4"/></pattern>
-            <filter id="glow" filterUnits="userSpaceOnUse" x="490" y="160" width="80" height="100"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-            <linearGradient id="beam" x1="0" x2="1"><stop offset="0" stop-color="#ff9a1f" stop-opacity=".26"/><stop offset="1" stop-color="#ff9a1f" stop-opacity="0"/></linearGradient>
-          </defs>
           <rect width="720" height="420" fill="url(#grid)" opacity=".6"/>
           <path d="M40 210H680" stroke="#3a2f22" stroke-dasharray="12 6 2 6"/>
-          <path d="M532 192 L700 122 V298 L532 228Z" fill="url(#beam)"/>
-          <g stroke="#b3a387" stroke-width="2.5"><path d="M230 126V150M350 126V150M470 126V150M230 294V270M350 294V270M470 294V270"/></g>
-          <g fill="url(#tread)" stroke="#f2b641" stroke-width="1.6">
-            <rect x="194" y="92" width="72" height="34" rx="6"/><rect x="314" y="92" width="72" height="34" rx="6"/><rect x="434" y="92" width="72" height="34" rx="6"/>
-            <rect x="194" y="294" width="72" height="34" rx="6"/><rect x="314" y="294" width="72" height="34" rx="6"/><rect x="434" y="294" width="72" height="34" rx="6"/>
+          <path class="p-beam" d="M532 192 L700 122 V298 L532 228Z" fill="url(#beam)"/>
+          <g stroke="#b3a387" stroke-width="2.5"><path class="dr" pathLength="1" style="--d:.5s" d="M230 126V150M350 126V150M470 126V150M230 294V270M350 294V270M470 294V270"/></g>
+          <g class="p-w" fill="url(#tread)" stroke="#f2b641" stroke-width="1.6">
+            <rect class="dr" pathLength="1" style="--d:.7s" x="194" y="92" width="72" height="34" rx="6"/><rect class="dr" pathLength="1" style="--d:.8s" x="314" y="92" width="72" height="34" rx="6"/><rect class="dr" pathLength="1" style="--d:.9s" x="434" y="92" width="72" height="34" rx="6"/>
+            <rect class="dr" pathLength="1" style="--d:.7s" x="194" y="294" width="72" height="34" rx="6"/><rect class="dr" pathLength="1" style="--d:.8s" x="314" y="294" width="72" height="34" rx="6"/><rect class="dr" pathLength="1" style="--d:.9s" x="434" y="294" width="72" height="34" rx="6"/>
           </g>
-          <path d="M206 150H486L524 178V242L486 270H206L176 246V174Z" fill="#17130e" stroke="#f2b641" stroke-width="2"/>
-          <path d="M222 166H478L506 186V234L478 254H222L196 236V184Z" fill="none" stroke="#f2b641" stroke-opacity=".4"/>
+          <g class="p-c" stroke="#f2b641">
+            <path class="dr" pathLength="1" d="M206 150H486L524 178V242L486 270H206L176 246V174Z" fill="#17130e" stroke-width="2"/>
+            <path class="dr" pathLength="1" style="--d:.3s" d="M222 166H478L506 186V234L478 254H222L196 236V184Z" fill="none" stroke-opacity=".4"/>
+          </g>
           <path d="M262 166V254M438 166V254" stroke="#3a2f22" stroke-width="1.2"/>
-          <circle cx="350" cy="210" r="28" fill="#0d0b08" stroke="#f2b641" stroke-width="1.6"/>
+          <circle class="dr" pathLength="1" style="--d:.6s" cx="350" cy="210" r="28" fill="#0d0b08" stroke="#f2b641" stroke-width="1.6"/>
           <circle cx="350" cy="210" r="11" fill="none" stroke="#f2b641" stroke-opacity=".6"/>
           <path d="M350 174V246M314 210H386" stroke="#f2b641" stroke-opacity=".35"/>
           <g fill="#f2b641" fill-opacity=".75"><circle cx="236" cy="180" r="2.4"/><circle cx="236" cy="240" r="2.4"/><circle cx="464" cy="180" r="2.4"/><circle cx="464" cy="240" r="2.4"/></g>
-          <rect x="526" y="189" width="6" height="42" fill="#ff9a1f" filter="url(#glow)"/>
+          <rect class="p-l" x="526" y="189" width="6" height="42" fill="#ff9a1f" filter="url(#glow)"/>
           <g stroke="#b3a387" stroke-opacity=".7" fill="none"><path d="M176 366H524M176 358V374M524 358V374"/><path d="M118 92V328M110 92H126M110 328H126"/></g>
         </svg>
         <figcaption>Schéma de principe, vue de dessus. L’avant est à droite.</figcaption>
       </figure>
-      <div class="rover__txt">
+      <div class="rover__txt head" data-rv="up">
         <h2 class="display" id="t-rover">Le rover</h2>
         <p class="rover__punch">Six appuis. Zéro compromis.</p>
         <p>Un rover à six roues, noir et or, signé d’une lueur ambre. Il a un seul travail : aller au bout du parcours sans toucher un obstacle et sans jamais rester bloqué.</p>
         <dl class="spec">
-          <div><dt>Roues</dt><dd>6</dd></div>
-          <div><dt>Livrée</dt><dd>noir et or</dd></div>
-          <div><dt>Signature</dt><dd>LED ambre</dd></div>
+          <div tabindex="0" data-part="roues"><dt>Roues</dt><dd>6</dd></div>
+          <div tabindex="0" data-part="chassis"><dt>Livrée</dt><dd>noir et or</dd></div>
+          <div tabindex="0" data-part="led"><dt>Signature</dt><dd>LED ambre</dd></div>
         </dl>
+        <p class="rover__hint">Survolez ou touchez une ligne pour la repérer sur le schéma.</p>
       </div>
     </div>
   </section>
 
   <section class="block" id="methode" aria-labelledby="t-methode">
     <div class="wrap">
-      <h2 class="display" id="t-methode">Notre méthode</h2>
-      <p class="lede">Pas de hasard. Quatre étapes, dans cet ordre.</p>
-      <ol class="steps">
-        <li><span class="steps__n"></span><h3>Les exigences</h3><p>Comprendre le cahier des charges et anticiper le comportement du robot avant de construire.</p></li>
-        <li><span class="steps__n"></span><h3>Les premiers essais</h3><p>Essayer vite pour détecter les problèmes tôt.</p></li>
-        <li><span class="steps__n"></span><h3>L’AMDEC</h3><p>Chaque défaillance possible est analysée. Les collisions sont prévenues par des essais répétés.</p></li>
-        <li><span class="steps__n"></span><h3>Le code</h3><p>Finalisé, réglé et validé avant la finale.</p></li>
+      <div class="head" data-rv="up">
+        <h2 class="display" id="t-methode">Notre méthode</h2>
+        <p class="lede">Pas de hasard. Quatre étapes, dans cet ordre.</p>
+      </div>
+      <ol class="steps" data-rv="t">
+        <li style="--i:0"><span class="steps__n"></span><h3>Les exigences</h3><p>Comprendre le cahier des charges et anticiper le comportement du robot avant de construire.</p></li>
+        <li style="--i:1"><span class="steps__n"></span><h3>Les premiers essais</h3><p>Essayer vite pour détecter les problèmes tôt.</p></li>
+        <li style="--i:2"><span class="steps__n"></span><h3>L’AMDEC</h3><p>Chaque défaillance possible est analysée. Les collisions sont prévenues par des essais répétés.</p></li>
+        <li style="--i:3"><span class="steps__n"></span><h3>Le code</h3><p>Finalisé, réglé et validé avant la finale.</p></li>
       </ol>
-      <div class="goal"><p>Notre objectif : au moins <span class="goal__n"><b>90</b>&nbsp;%</span> de réussite aux essais.</p></div>
+      <div class="goal" data-rv="t">
+        <svg class="ring" viewBox="0 0 96 96" aria-hidden="true"><circle class="ring__bg" cx="48" cy="48" r="40"/><circle class="ring__fg" cx="48" cy="48" r="40" pathLength="100"/></svg>
+        <p>Notre objectif : au moins <span class="goal__n"><b data-count="90">90</b>&nbsp;%</span> de réussite aux essais.<span>Pas de hasard, de la méthode.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="equipe" aria-labelledby="t-equipe">
+    <div class="wrap">
+      <div class="head" data-rv="up">
+        <h2 class="display" id="t-equipe">L’équipage</h2>
+        <p class="lede">Cinq spécialités, une obsession.</p>
+      </div>
+      <ul class="crew">
+        <li data-rv="up" style="--i:0"><article class="card"><div class="card__disc" aria-hidden="true">LA</div><p class="card__tag">Planification</p><h3 class="display card__name">Loaï Abu-Aita</h3><p class="card__role">Chef de projet agile</p><p class="card__txt">Planification, points d’avancement et suivi de l’équipe.</p></article></li>
+        <li data-rv="up" style="--i:1"><article class="card"><div class="card__disc" aria-hidden="true">ZA</div><p class="card__tag">Mécanique</p><h3 class="display card__name">Zakariae Arroub</h3><p class="card__role">R&amp;D mécanique et robotique</p><p class="card__txt">Conception mécanique du rover, de l’exigence à la pièce.</p></article></li>
+        <li data-rv="up" style="--i:2"><article class="card"><div class="card__disc" aria-hidden="true">NB</div><p class="card__tag">Logiciel</p><h3 class="display card__name">Nermine Badis</h3><p class="card__role">R&amp;D logiciel SCADE</p><p class="card__txt">Modélisation SCADE, machines à états et simulation.</p></article></li>
+        <li data-rv="up" style="--i:3"><article class="card"><div class="card__disc" aria-hidden="true">AB</div><p class="card__tag">Essais</p><h3 class="display card__name">Anass Bahraoui</h3><p class="card__role">R&amp;D fiabilité et essais</p><p class="card__txt">Plans de tests, AMDEC et essais répétés.</p></article></li>
+        <li data-rv="up" style="--i:4"><article class="card"><div class="card__disc" aria-hidden="true">IA</div><p class="card__tag">Communication</p><h3 class="display card__name">Imane Ahmany</h3><p class="card__role">Marketing, réseaux et stratégie</p><p class="card__txt">Communication, stratégie digitale et valorisation du projet auprès des partenaires.</p></article></li>
+      </ul>
     </div>
   </section>
 
   <section class="block" id="savoir-faire" aria-labelledby="t-savoir">
     <div class="wrap split">
-      <div>
+      <div class="head" data-rv="up">
         <h2 class="display" id="t-savoir">Ce que nous savons faire</h2>
         <p class="lede">De l’exigence au robot qui roule.</p>
       </div>
       <dl class="rows">
-        <div><dt class="rows__k">Concevoir</dt><dd class="rows__v">Mécanique, conception et robotique.</dd></div>
-        <div><dt class="rows__k">Modéliser</dt><dd class="rows__v">SCADE, machines à états, simulation et validation.</dd></div>
-        <div><dt class="rows__k">Valider</dt><dd class="rows__v">Plans de tests, AMDEC, qualité.</dd></div>
-        <div><dt class="rows__k">Industrialiser</dt><dd class="rows__v">Passer du prototype à un système fiable.</dd></div>
-        <div><dt class="rows__k">Piloter</dt><dd class="rows__v">Gestion de projet Agile, planification et suivi.</dd></div>
+        <div data-rv="up" style="--i:0"><dt>Concevoir</dt><dd>Mécanique, conception et robotique.</dd></div>
+        <div data-rv="up" style="--i:1"><dt>Modéliser</dt><dd>SCADE, machines à états, simulation et validation.</dd></div>
+        <div data-rv="up" style="--i:2"><dt>Valider</dt><dd>Plans de tests, AMDEC, qualité.</dd></div>
+        <div data-rv="up" style="--i:3"><dt>Industrialiser</dt><dd>Passer du prototype à un système fiable.</dd></div>
+        <div data-rv="up" style="--i:4"><dt>Piloter</dt><dd>Gestion de projet Agile, planification et suivi.</dd></div>
       </dl>
     </div>
   </section>
 
-  <section class="block" id="equipe" aria-labelledby="t-equipe">
+  <section class="block when" id="challenge" aria-labelledby="t-challenge">
     <div class="wrap split">
-      <div>
-        <h2 class="display" id="t-equipe">L’équipage</h2>
-        <p class="lede">Cinq spécialités, une obsession.</p>
-      </div>
-      <ul class="rows crew">
-        <li><span class="rows__k">Loaï Abu-Aita</span><span class="rows__v"><strong>Chef de projet agile</strong>Planification, points d’avancement et suivi de l’équipe.</span></li>
-        <li><span class="rows__k">Zakariae Arroub</span><span class="rows__v"><strong>R&amp;D mécanique et robotique</strong>Conception mécanique du rover, de l’exigence à la pièce.</span></li>
-        <li><span class="rows__k">Nermine Badis</span><span class="rows__v"><strong>R&amp;D logiciel SCADE</strong>Modélisation SCADE, machines à états et simulation.</span></li>
-        <li><span class="rows__k">Anass Bahraoui</span><span class="rows__v"><strong>R&amp;D fiabilité et essais</strong>Plans de tests, AMDEC et essais répétés.</span></li>
-        <li><span class="rows__k">Imane Ahmany</span><span class="rows__v"><strong>Marketing, réseaux et stratégie</strong>Communication, stratégie digitale et valorisation du projet auprès des partenaires.</span></li>
-      </ul>
-    </div>
-  </section>
-
-  <section class="block when" id="rendez-vous" aria-labelledby="t-rdv">
-    <div class="wrap split">
-      <div>
-        <h2 class="display" id="t-rdv">Rendez-vous</h2>
+      <div class="head" data-rv="up">
+        <h2 class="display" id="t-challenge">Le challenge</h2>
         <p class="lede">13 équipes. Une seule arène.</p>
       </div>
       <div>
-        <p class="display when__date">14 – 18 décembre 2026</p>
-        <p class="when__place">Polytech Angers</p>
-        <p class="when__txt">Le Game of Robots est le challenge de robotique de Polytech Angers, mené avec ses partenaires Ansys / ADDL, Onepoint et Thales. En une semaine, chaque équipe conçoit et réalise son robot, puis les machines s’affrontent.</p>
-        <ul class="dates">
+        <div data-rv="up">
+          <p class="display when__date">14 – 18 décembre 2026</p>
+          <p class="when__place">Polytech Angers</p>
+          <p class="when__txt">Le Game of Robots est le challenge de robotique de Polytech Angers, mené avec ses partenaires Ansys / ADDL, Onepoint et Thales. En une semaine, chaque équipe conçoit et réalise son robot, puis les machines s’affrontent.</p>
+          <ul class="chips" aria-label="Ce que le challenge met à l’épreuve">
+            <li>Ingénierie des exigences</li><li>Modélisation SCADE</li><li>Gestion de projet agile</li><li>Mécanique</li><li>Validation et essais</li><li>Marketing</li>
+          </ul>
+        </div>
+        <div class="tl" id="tl" data-rv="t" aria-hidden="true">
+          <span class="tl__now" id="tl-now"></span>
+          <div class="tl__track"><i class="tl__week"></i></div>
+          <div class="tl__ends"><span>9 nov. · pitch de lancement</span><span>14 – 18 déc. · challenge</span></div>
+        </div>
+        <ul class="dates" data-rv="up">
           <li><time datetime="2026-11-09">9 novembre 2026</time><span>Pitch de lancement de l’équipe</span></li>
           <li><time datetime="2026-12-14">14 décembre 2026</time><span>Début du challenge</span></li>
           <li><time datetime="2026-12-18">18 décembre 2026</time><span>Dernier jour du challenge</span></li>
@@ -394,11 +611,15 @@ footer a:hover{color:var(--gold)}
   </section>
 
   <section class="end" aria-labelledby="t-end">
-    <div class="end__planet" aria-hidden="true"></div>
-    <div class="wrap end__in">
+    <div class="end__sky" aria-hidden="true"><div class="planet"></div></div>
+    <div class="wrap end__in" data-rv="up">
       <h2 class="display end__say" id="t-end"><span>Nous ne venons pas participer.</span><span>Nous venons gagner.</span></h2>
       <p class="end__txt">Les coulisses, le rover et l’équipe sont sur Instagram.</p>
-      <a class="btn" href="https://www.instagram.com/arra_kor/" target="_blank" rel="noopener">Suivre @arra_kor</a>
+      <div class="end__cta">
+        <a class="btn" href="https://www.instagram.com/arra_kor/" target="_blank" rel="noopener">Suivre @arra_kor</a>
+        <button class="btn btn--ghost" id="share" type="button">Partager la page</button>
+      </div>
+      <p class="end__tags">#ARRAKOR #GameOfRobots2026 #PolytechAngers</p>
     </div>
   </section>
 </main>
@@ -413,19 +634,73 @@ footer a:hover{color:var(--gold)}
 <script>
 (function(){
   "use strict";
-  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var d = document, root = d.documentElement;
+  function $(s, c){ return (c || d).querySelector(s); }
+  function $$(s, c){ return Array.prototype.slice.call((c || d).querySelectorAll(s)); }
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var hasIO = "IntersectionObserver" in window;
 
-  /* Barre de navigation : fond plein dès qu'on quitte le haut de page */
-  var nav = document.getElementById("nav");
-  function onScroll(){ nav.classList.toggle("is-solid", window.scrollY > 24); }
-  window.addEventListener("scroll", onScroll, {passive:true}); onScroll();
+  /* Navigation, barre de progression et parallaxe du hero */
+  var nav = $("#nav"), bar = $("#bar"), btn = $("#menu-btn"), queued = false;
+  function onScroll(){
+    queued = false;
+    var y = window.scrollY, max = root.scrollHeight - window.innerHeight;
+    nav.classList.toggle("is-solid", y > 24);
+    bar.style.transform = "scaleX(" + (max > 0 ? Math.min(1, y / max) : 0).toFixed(4) + ")";
+    if (!reduce && y < window.innerHeight * 1.3) root.style.setProperty("--sy", y.toFixed(0));
+  }
+  window.addEventListener("scroll", function(){ if (!queued){ queued = true; requestAnimationFrame(onScroll); } }, {passive:true});
+  onScroll();
+  function menu(open){ nav.classList.toggle("is-open", open); btn.setAttribute("aria-expanded", open ? "true" : "false"); }
+  btn.addEventListener("click", function(){ menu(!nav.classList.contains("is-open")); });
+  $$("#menu a").forEach(function(a){ a.addEventListener("click", function(){ menu(false); }); });
+  d.addEventListener("keydown", function(e){ if (e.key === "Escape") menu(false); });
+  var links = {};
+  $$("#menu a").forEach(function(a){ var h = a.getAttribute("href"); if (h.charAt(0) === "#") links[h.slice(1)] = a; });
+  if (hasIO){
+    var spy = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if (!e.isIntersecting) return;
+        for (var k in links) links[k].removeAttribute("aria-current");
+        if (links[e.target.id]) links[e.target.id].setAttribute("aria-current", "true");
+      });
+    }, {rootMargin:"-45% 0px -50% 0px"});
+    $$("main section[id]").concat([$("#top")]).forEach(function(s){ spy.observe(s); });
+  }
+
+  /* Apparitions au défilement et compteurs */
+  function count(el){
+    var to = +el.getAttribute("data-count"), t0 = 0;
+    if (reduce) return;
+    el.textContent = "0";
+    requestAnimationFrame(function f(t){
+      if (!t0) t0 = t;
+      var p = Math.min(1, (t - t0) / 1200);
+      el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) requestAnimationFrame(f);
+    });
+  }
+  function show(el){ el.classList.add("in"); $$("[data-count]", el).forEach(count); }
+  var rv = $$("[data-rv]");
+  if (hasIO){
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if (e.isIntersecting){ io.unobserve(e.target); show(e.target); } });
+    }, {threshold:.15, rootMargin:"0px 0px -6% 0px"});
+    rv.forEach(function(el){ io.observe(el); });
+  } else rv.forEach(show);
 
   /* Compte à rebours jusqu'au 14 décembre 2026, 00 h 00, heure de Paris */
   var START = Date.parse("2026-12-14T00:00:00+01:00");
   var END   = Date.parse("2026-12-19T00:00:00+01:00");
-  var hero = document.getElementById("top"), msg = document.getElementById("cd-msg");
-  var el = {d:document.getElementById("cd-d"),h:document.getElementById("cd-h"),m:document.getElementById("cd-m"),s:document.getElementById("cd-s")};
+  var hero = $("#top"), msg = $("#cd-msg");
+  var cd = {d:$("#cd-d"), h:$("#cd-h"), m:$("#cd-m"), s:$("#cd-s")};
   function pad(n){ return (n < 10 ? "0" : "") + n; }
+  function put(el, v){
+    v = String(v);
+    if (el.textContent === v) return;
+    el.textContent = v;
+    el.classList.remove("tick"); void el.offsetWidth; el.classList.add("tick");
+  }
   var timer = null;
   function tick(){
     var now = Date.now();
@@ -440,51 +715,164 @@ footer a:hover{color:var(--gold)}
       return;
     }
     var t = Math.floor((START - now) / 1000);
-    el.d.textContent = Math.floor(t / 86400);
-    el.h.textContent = pad(Math.floor(t % 86400 / 3600));
-    el.m.textContent = pad(Math.floor(t % 3600 / 60));
-    el.s.textContent = pad(t % 60);
+    put(cd.d, Math.floor(t / 86400));
+    put(cd.h, pad(Math.floor(t % 86400 / 3600)));
+    put(cd.m, pad(Math.floor(t % 3600 / 60)));
+    put(cd.s, pad(t % 60));
   }
   tick(); timer = setInterval(tick, 1000);
 
-  /* Poussière dorée du hero */
-  var c = document.getElementById("dust");
-  if (!c || !c.getContext) return;
-  var ctx = c.getContext("2d"), w = 0, h = 0, parts = [], raf = 0, onscreen = true;
+  /* Frise : où en est-on entre le pitch et le challenge ? */
+  var tl = $("#tl");
+  if (tl){
+    var T0 = Date.parse("2026-11-09T00:00:00+01:00"), now0 = Date.now();
+    var f = Math.max(0, Math.min(1, (now0 - T0) / (END - T0)));
+    tl.style.setProperty("--f", f.toFixed(4));
+    tl.classList.toggle("is-early", f < .16);
+    tl.classList.toggle("is-late", f > .7);
+    $("#tl-now").textContent = now0 < START ? "Aujourd’hui, J-" + Math.ceil((START - now0) / 864e5) : (now0 < END ? "Aujourd’hui, en plein challenge" : "Challenge terminé");
+  }
+
+  /* Hero : poussière dorée, étoiles et rover qui suit la crête de la dune */
+  var c = $("#dust"), ctx = c && c.getContext ? c.getContext("2d") : null;
+  var w = 0, h = 0, parts = [], raf = 0, heroOn = true, lastT = 0;
+  var ground = $("#ground"), ridge = $("#ridge"), hr = $("#hrover");
+  var RL = ridge && ridge.getTotalLength ? ridge.getTotalLength() : 0, rp = .14;
   function size(){
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    if (!ctx) return;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2), i, star;
     w = c.clientWidth; h = c.clientHeight;
     c.width = Math.round(w * dpr); c.height = Math.round(h * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    var n = Math.round(Math.min(130, w * h / 9500));
+    var n = Math.round(Math.min(120, w * h / 10000)), s = Math.round(n * .4);
     parts = [];
-    for (var i = 0; i < n; i++) parts.push({
-      x: Math.random() * w, y: Math.random() * h,
-      r: Math.random() * 1.3 + .3,
-      vx: Math.random() * .16 + .04, vy: (Math.random() - .62) * .07,
-      a: Math.random() * .45 + .1, p: Math.random() * 6.283
-    });
+    for (i = 0; i < n + s; i++){
+      star = i >= n;
+      parts.push({
+        x: Math.random() * w, y: Math.random() * h * (star ? .6 : 1),
+        r: star ? Math.random() * .9 + .3 : Math.random() * 1.3 + .3,
+        vx: star ? 0 : Math.random() * .16 + .04, vy: star ? 0 : (Math.random() - .62) * .07,
+        a: Math.random() * .45 + .1, p: Math.random() * 6.283, s: star
+      });
+    }
   }
-  function draw(){
+  function place(){
+    if (!RL) return;
+    var W = ground.clientWidth, H = ground.clientHeight, q = Math.max(0, Math.min(1, rp));
+    var a = ridge.getPointAtLength(q * RL), b = ridge.getPointAtLength(Math.min(1, q + .006) * RL);
+    var x = a.x / 1440 * W + (rp - q) * W, y = a.y / 320 * H;
+    var ang = Math.atan2((b.y - a.y) / 320 * H, (b.x - a.x) / 1440 * W) || 0;
+    hr.style.transform = "translate3d(" + x.toFixed(1) + "px," + y.toFixed(1) + "px,0) translate(-50%,-97%) rotate(" + ang.toFixed(3) + "rad)";
+  }
+  function paint(dt){
+    var i, p;
+    if (!ctx) return;
     ctx.clearRect(0, 0, w, h);
-    for (var i = 0; i < parts.length; i++){
-      var p = parts[i];
-      if (!reduce){
-        p.x += p.vx; p.y += p.vy; p.p += .012;
-        if (p.x > w + 4) p.x = -4;
-        if (p.y < -4) p.y = h + 4; else if (p.y > h + 4) p.y = -4;
-      }
-      ctx.fillStyle = "rgba(242,182,65," + (p.a * (.6 + .4 * Math.sin(p.p))).toFixed(3) + ")";
+    for (i = 0; i < parts.length; i++){
+      p = parts[i];
+      p.x += p.vx * dt / 16; p.y += p.vy * dt / 16; p.p += .0008 * dt * (p.s ? 2.2 : 1);
+      if (p.x > w + 4) p.x = -4;
+      if (p.y < -4) p.y = h + 4; else if (p.y > h + 4) p.y = -4;
+      ctx.fillStyle = (p.s ? "rgba(255,231,174," : "rgba(242,182,65,") + (p.a * (.55 + .45 * Math.sin(p.p))).toFixed(3) + ")";
       ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
     }
-    raf = (!reduce && onscreen && !document.hidden) ? requestAnimationFrame(draw) : 0;
   }
-  function start(){ if (!raf) draw(); }
-  size(); start();
-  var rz; window.addEventListener("resize", function(){ clearTimeout(rz); rz = setTimeout(function(){ size(); if (reduce) draw(); }, 150); });
-  document.addEventListener("visibilitychange", start);
-  if ("IntersectionObserver" in window){
-    new IntersectionObserver(function(e){ onscreen = e[0].isIntersecting; if (onscreen) start(); }).observe(hero);
+  function frame(t){
+    var dt = lastT ? Math.min(60, t - lastT) : 16;
+    lastT = t;
+    paint(dt);
+    rp += dt / 50000; if (rp > 1.08) rp = -.08;
+    place();
+    raf = (heroOn && !d.hidden) ? requestAnimationFrame(frame) : 0;
+    if (!raf) lastT = 0;
+  }
+  function startHero(){ if (reduce){ paint(0); rp = .3; place(); } else if (!raf) raf = requestAnimationFrame(frame); }
+  size(); startHero();
+  var rz;
+  window.addEventListener("resize", function(){ clearTimeout(rz); rz = setTimeout(function(){ size(); if (reduce) startHero(); }, 150); });
+  if (hasIO) new IntersectionObserver(function(e){ heroOn = e[0].isIntersecting; if (heroOn) startHero(); }).observe(hero);
+
+  /* Bandeau défilant : on duplique le texte jusqu'à couvrir deux écrans */
+  var tk = $("#ticker");
+  if (tk && !reduce){
+    var track = $(".ticker__track", tk), set = $(".ticker__set", tk), sw = set.offsetWidth, k = 0;
+    while (sw > 0 && track.scrollWidth < window.innerWidth * 2 + sw && k++ < 8) track.appendChild(set.cloneNode(true));
+    tk.style.setProperty("--w", sw + "px");
+    tk.classList.add("is-on");
+  }
+
+  /* Parcours : le rover suit sa trajectoire entre les obstacles */
+  var arena = $("#arena"), aOn = false, aRun = false;
+  var path = $("#ar-path"), trail = $("#ar-trail"), bot = $("#ar-bot"), cone = $("#ar-cone");
+  var st = $("#ar-state"), pr = $("#ar-prog"), obs = arena ? $$(".ar-ob", arena) : [];
+  var AL = path && path.getTotalLength ? path.getTotalLength() : 0, ap = 0, hold = 0, aLast = 0, sTxt = "", pTxt = "";
+  function aset(p, t){
+    var a = path.getPointAtLength(p * AL), b = path.getPointAtLength(Math.min(AL, p * AL + 2));
+    var ang = p >= 1 ? 0 : Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
+    bot.setAttribute("transform", "translate(" + a.x.toFixed(1) + " " + a.y.toFixed(1) + ") rotate(" + ang.toFixed(1) + ")");
+    trail.style.strokeDashoffset = (AL * (1 - p)).toFixed(1);
+    cone.setAttribute("transform", "rotate(" + (Math.sin(t / 260) * 16).toFixed(1) + ")");
+    cone.style.opacity = p >= 1 ? 0 : 1;
+    obs.forEach(function(o){
+      var dx = +o.getAttribute("data-x") - a.x, dy = +o.getAttribute("data-y") - a.y;
+      o.classList.toggle("is-seen", p < 1 && dx * dx + dy * dy < 24000);
+    });
+    var s = p >= 1 ? "Parcours réussi" : (p < .05 ? "Balayage du terrain" : "Trajectoire suivie"), g = Math.round(p * 100) + " %";
+    if (s !== sTxt){ sTxt = s; st.textContent = s; }
+    if (g !== pTxt){ pTxt = g; pr.textContent = g; }
+  }
+  function astep(t){
+    if (!aOn || d.hidden){ aRun = false; aLast = 0; return; }
+    var dt = aLast ? Math.min(60, t - aLast) : 16;
+    aLast = t;
+    if (ap < 1) ap = Math.min(1, ap + dt / 9500);
+    else { hold += dt; if (hold > 2600){ hold = 0; ap = 0; } }
+    aset(ap, t);
+    requestAnimationFrame(astep);
+  }
+  function startArena(){ if (aOn && !aRun && !d.hidden){ aRun = true; requestAnimationFrame(astep); } }
+  if (arena && AL){
+    trail.style.strokeDasharray = AL.toFixed(1);
+    if (reduce) aset(1, 0);
+    else if (hasIO) new IntersectionObserver(function(e){ aOn = e[0].isIntersecting; startArena(); }, {threshold:.15}).observe(arena);
+    else { aOn = true; startArena(); }
+  }
+  d.addEventListener("visibilitychange", function(){ if (!d.hidden){ if (heroOn) startHero(); startArena(); } });
+  if (reduce) $$("svg").forEach(function(s){ if (s.pauseAnimations) s.pauseAnimations(); });
+
+  /* Schéma du rover : une ligne de la fiche éclaire la pièce correspondante */
+  var plan = $("#plan");
+  $$("[data-part]").forEach(function(r){
+    function on(){ plan.setAttribute("data-hl", r.getAttribute("data-part")); }
+    function off(){ plan.removeAttribute("data-hl"); }
+    r.addEventListener("pointerenter", on); r.addEventListener("pointerleave", off);
+    r.addEventListener("focus", on); r.addEventListener("blur", off);
+  });
+
+  /* Cartes de l'équipage : légère inclinaison sous le pointeur */
+  if (!reduce && window.matchMedia("(hover: hover)").matches){
+    $$(".card").forEach(function(card){
+      card.addEventListener("pointermove", function(e){
+        var r = card.getBoundingClientRect();
+        card.style.setProperty("--ry", (((e.clientX - r.left) / r.width - .5) * 9).toFixed(2) + "deg");
+        card.style.setProperty("--rx", ((.5 - (e.clientY - r.top) / r.height) * 9).toFixed(2) + "deg");
+      });
+      card.addEventListener("pointerleave", function(){ card.style.setProperty("--rx", "0deg"); card.style.setProperty("--ry", "0deg"); });
+    });
+  }
+
+  /* Partage de la page */
+  var sh = $("#share");
+  if (sh){
+    if (!navigator.share && !navigator.clipboard) sh.hidden = true;
+    sh.addEventListener("click", function(){
+      var u = location.href.split("#")[0];
+      if (navigator.share) navigator.share({title: d.title, text: "ARRAKOR, équipe n°1 du Game of Robots 2026", url: u}).catch(function(){});
+      else navigator.clipboard.writeText(u).then(function(){
+        sh.textContent = "Lien copié";
+        setTimeout(function(){ sh.textContent = "Partager la page"; }, 2200);
+      });
+    });
   }
 })();
 </script>
