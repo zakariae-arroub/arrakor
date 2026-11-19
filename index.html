@@ -214,7 +214,6 @@ section{scroll-margin-top:72px}
 .hud dt{font-size:.8rem;color:var(--ink-muted)}
 .hud dd{margin-top:4px;font:500 1rem/1.3 var(--mono);color:var(--gold);font-variant-numeric:tabular-nums}
 @media (max-width:640px){.hud{grid-template-columns:repeat(2,1fr)}.hud div:nth-child(3){border-left:0}.hud div:nth-child(n+3){border-top:1px solid var(--line)}}
-.verbs{margin-top:clamp(28px,4vw,44px);font-size:clamp(1rem,2.4vw,1.5rem);line-height:1.5;color:var(--gold);text-align:center;text-wrap:balance}
 
 /* Rover */
 .rover{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(28px,5vw,72px);align-items:center}
@@ -283,7 +282,6 @@ section{scroll-margin-top:72px}
 .card__tag{margin-top:20px;font:500 .78rem/1.2 var(--mono);color:var(--ink-muted)}
 .card__name{margin-top:8px;min-height:2.7em;font-size:.98rem;line-height:1.35;color:var(--gold)}
 .card__role{margin-top:8px;font-weight:600;font-size:.98rem;line-height:1.35}
-.card__txt{margin-top:8px;font-size:.93rem;line-height:1.55;color:var(--ink-muted)}
 
 /* Listes à filets */
 .rows{border-top:1px solid var(--line)}
@@ -296,8 +294,6 @@ section{scroll-margin-top:72px}
 .when__date{font-size:clamp(1.3rem,3.1vw,2.3rem);line-height:1.25;color:var(--gold)}
 .when__place{margin-top:.8rem;font-size:1.2rem;font-weight:600}
 .when p.when__txt{margin-top:1.1rem;color:var(--ink-muted);max-width:56ch}
-.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:1.4rem}
-.chips li{padding:.45rem .85rem;font-size:.9rem;color:var(--ink);background:var(--sand-700);clip-path:polygon(7px 0,100% 0,100% calc(100% - 7px),calc(100% - 7px) 100%,0 100%,0 7px)}
 .tl{display:none;position:relative;margin-top:clamp(36px,5vw,56px);padding-top:50px}
 .js .tl{display:block}
 .tl__track{position:relative;height:6px;background:var(--sand-700)}
@@ -364,7 +360,6 @@ footer a:hover{color:var(--gold)}
 .swatches li:hover i{transform:translateY(-8px)}
 .swatches b{display:block;margin-top:14px;font-weight:600}
 .swatches span{display:block;font:500 .8rem/1.6 var(--mono);color:var(--gold)}
-.swatches em{display:block;font-style:normal;font-size:.88rem;line-height:1.45;color:var(--ink-muted)}
 
 /* Partenaires : section claire, bordée de dunes */
 .sable{position:relative;padding:clamp(130px,17vw,220px) 0 clamp(140px,18vw,230px);background:var(--sable);color:var(--ink-dark)}
@@ -388,14 +383,6 @@ footer a:hover{color:var(--gold)}
 .plaque:hover::after{width:56px}
 
 /* Questions fréquentes */
-.faq{border-top:1px solid var(--line)}
-.faq details{border-bottom:1px solid var(--line)}
-.faq summary{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:clamp(16px,2.2vw,22px) 0;font-weight:600;font-size:1.05rem;cursor:pointer;list-style:none;transition:color .2s ease}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:"";flex:none;width:14px;height:14px;background:linear-gradient(var(--gold),var(--gold)) center/100% 2px no-repeat,linear-gradient(var(--gold),var(--gold)) center/2px 100% no-repeat;transition:transform .35s var(--ease)}
-.faq details[open] summary::after{transform:rotate(135deg)}
-.faq summary:hover{color:var(--gold)}
-.faq details p{padding:0 2.5rem clamp(16px,2.2vw,22px) 0;max-width:60ch;color:var(--ink-muted);animation:fade .45s ease both}
 
 /* Final : la planète se lève quand on arrive */
 .end__sky .planet{transition:transform 1.8s var(--ease),opacity 1.8s ease}
@@ -408,7 +395,7 @@ footer a:hover{color:var(--gold)}
 </style>
 </head>
 <body>
-<a class="skip" href="#mission">Aller au contenu</a>
+<a class="skip" href="#mascotte">Aller au contenu</a>
 <div class="bar" id="bar" aria-hidden="true"></div>
 
 <nav class="nav" id="nav" aria-label="Navigation principale">
@@ -416,12 +403,12 @@ footer a:hover{color:var(--gold)}
     <a class="nav__brand" href="#top" aria-label="ARRAKOR, haut de page"><span class="mark"><img src="image.png?v=2" alt="" width="38" height="38"></span>ARRAKOR</a>
     <button class="nav__toggle" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Menu"><i></i><i></i></button>
     <div class="nav__links" id="menu">
+      <a href="#mascotte">Mascotte</a>
       <a href="#mission">Mission</a>
       <a href="#parcours">Parcours</a>
       <a href="#rover">Rover</a>
       <a href="#methode">Méthode</a>
       <a href="#equipe">Équipe</a>
-      <a href="#mascotte">Mascotte</a>
       <a href="#challenge">Challenge</a>
       <a href="#partenaires">Partenaires</a>
       <a class="nav__ig" href="https://www.instagram.com/arra_kor/" target="_blank" rel="noopener">Instagram</a>
@@ -450,7 +437,7 @@ footer a:hover{color:var(--gold)}
 
     <div class="hero__cta">
       <a class="btn" href="https://www.instagram.com/arra_kor/" target="_blank" rel="noopener">Suivre @arra_kor</a>
-      <a class="btn btn--ghost" href="#mission">Découvrir la mission</a>
+      <a class="btn btn--ghost" href="#mascotte" id="tour-btn">Suivre la visite guidée</a>
     </div>
     </div>
   </div>
@@ -490,6 +477,19 @@ footer a:hover{color:var(--gold)}
 </div>
 
 <main>
+  <section class="block glow-l" id="mascotte" aria-labelledby="t-mascotte">
+    <div class="wrap">
+      <div class="head" data-rv="up">
+        <h2 class="display" id="t-mascotte">La mascotte</h2>
+        <p class="lede">Le sixième membre de l’équipage vous fait la visite. Choisissez un sujet.</p>
+      </div>
+      <div class="mascot" data-rv="up">
+        <iframe src="mascotte.html" title="Mascotte ARRAKOR animée : un robot doré qui présente la mission, le rover, la méthode, l’équipage, le challenge et les partenaires" loading="lazy"></iframe>
+      </div>
+      <p class="mascot__more"><a href="mascotte.html">Ouvrir la mascotte en plein écran</a></p>
+    </div>
+  </section>
+
   <section class="block glow-r" id="mission" aria-labelledby="t-mission">
     <div class="wrap">
       <h2 class="sr-only" id="t-mission">Notre mission</h2>
@@ -499,19 +499,16 @@ footer a:hover{color:var(--gold)}
           <svg class="glyph g-speed" viewBox="0 0 56 56" aria-hidden="true"><path d="M8 38a20 20 0 1 1 40 0"/><path class="needle" d="M28 38V17"/><circle class="fillg" cx="28" cy="38" r="2.6"/></svg>
           <h3>Vitesse maîtrisée</h3>
           <p class="pillars__punch">La vitesse fait avancer.</p>
-          <p>Aller vite, mais jamais plus vite que ce que le rover sait contrôler.</p>
         </li>
         <li data-rv="up" style="--i:1">
           <svg class="glyph g-aim" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="20"/><path d="M28 4v10M28 42v10M4 28h10M42 28h10"/><circle class="ring" cx="28" cy="28" r="9"/><circle class="dot fillg" cx="28" cy="28" r="2.6"/></svg>
           <h3>Précision</h3>
           <p class="pillars__punch">La précision évite les erreurs.</p>
-          <p>Suivre la trajectoire prévue, au plus près.</p>
         </li>
         <li data-rv="up" style="--i:2">
           <svg class="glyph g-loop" viewBox="0 0 56 56" aria-hidden="true"><circle class="arc" cx="28" cy="28" r="20" pathLength="1"/><path class="chk" d="M19 29l6 6 12-13" pathLength="1"/></svg>
           <h3>Fiabilité</h3>
           <p class="pillars__punch">La fiabilité mène à l’arrivée.</p>
-          <p>Refaire le même parcours, essai après essai, avec le même résultat.</p>
         </li>
       </ul>
       <ul class="facts" data-rv="up">
@@ -525,8 +522,8 @@ footer a:hover{color:var(--gold)}
   <section class="block" id="parcours" aria-labelledby="t-parcours">
     <div class="wrap">
       <div class="head" data-rv="up">
-        <h2 class="display" id="t-parcours">Zéro collision. Zéro blocage.</h2>
-        <p class="lede">Ce que le rover doit réussir : lire le terrain, choisir sa trajectoire et la tenir jusqu’à l’arrivée.</p>
+        <h2 class="display" id="t-parcours">Le parcours</h2>
+        <p class="lede">Lire le terrain, choisir sa trajectoire, la tenir jusqu’à l’arrivée.</p>
       </div>
       <figure class="plan arena" data-rv="up">
         <svg id="arena" viewBox="0 0 800 400" role="img" aria-labelledby="ar-t ar-d">
@@ -567,9 +564,8 @@ footer a:hover{color:var(--gold)}
           <button class="btn btn--ghost" id="pilot-btn" type="button" aria-pressed="false">À vous de piloter</button>
           <p id="pilot-hint">Le rover roule en pilote automatique.</p>
         </div>
-        <figcaption>Animation de principe : elle illustre notre objectif, pas des mesures réelles.</figcaption>
+        <figcaption>Animation de principe, pas des mesures réelles.</figcaption>
       </figure>
-      <p class="display verbs" data-rv="up">Il scanne. Il comprend. Il décide.</p>
     </div>
   </section>
 
@@ -599,18 +595,17 @@ footer a:hover{color:var(--gold)}
           <rect class="p-l" x="526" y="189" width="6" height="42" fill="#ff9a1f" filter="url(#glow)"/>
           <g stroke="#b3a387" stroke-opacity=".7" fill="none"><path d="M176 366H524M176 358V374M524 358V374"/><path d="M118 92V328M110 92H126M110 328H126"/></g>
         </svg>
-        <figcaption>Schéma de principe, vue de dessus. L’avant est à droite.</figcaption>
+        <figcaption>Vue de dessus. L’avant est à droite.</figcaption>
       </figure>
       <div class="rover__txt head" data-rv="up">
         <h2 class="display" id="t-rover">Le rover</h2>
         <p class="rover__punch">Six appuis. Zéro compromis.</p>
-        <p>Un rover à six roues, noir et or, signé d’une lueur ambre. Il a un seul travail : aller au bout du parcours sans toucher un obstacle et sans jamais rester bloqué.</p>
         <dl class="spec">
           <div tabindex="0" data-part="roues"><dt>Roues</dt><dd>6</dd></div>
           <div tabindex="0" data-part="chassis"><dt>Livrée</dt><dd>noir et or</dd></div>
           <div tabindex="0" data-part="led"><dt>Signature</dt><dd>LED ambre</dd></div>
         </dl>
-        <p class="rover__hint">Survolez ou touchez une ligne pour la repérer sur le schéma.</p>
+        <p class="rover__hint">Touchez une ligne pour la repérer sur le schéma.</p>
       </div>
     </div>
   </section>
@@ -619,13 +614,13 @@ footer a:hover{color:var(--gold)}
     <div class="wrap">
       <div class="head" data-rv="up">
         <h2 class="display" id="t-methode">Notre méthode</h2>
-        <p class="lede">Pas de hasard. Quatre étapes, dans cet ordre.</p>
+        <p class="lede">Quatre étapes, dans cet ordre.</p>
       </div>
       <ol class="steps" data-rv="t">
-        <li style="--i:0"><span class="steps__n"></span><h3>Les exigences</h3><p>Comprendre le cahier des charges et anticiper le comportement du robot avant de construire.</p></li>
-        <li style="--i:1"><span class="steps__n"></span><h3>Les premiers essais</h3><p>Essayer vite pour détecter les problèmes tôt.</p></li>
-        <li style="--i:2"><span class="steps__n"></span><h3>L’AMDEC</h3><p>Chaque défaillance possible est analysée. Les collisions sont prévenues par des essais répétés.</p></li>
-        <li style="--i:3"><span class="steps__n"></span><h3>Le code</h3><p>Finalisé, réglé et validé avant la finale.</p></li>
+        <li style="--i:0"><span class="steps__n"></span><h3>Les exigences</h3><p>Comprendre avant de construire.</p></li>
+        <li style="--i:1"><span class="steps__n"></span><h3>Les premiers essais</h3><p>Essayer vite, corriger tôt.</p></li>
+        <li style="--i:2"><span class="steps__n"></span><h3>L’AMDEC</h3><p>Chaque défaillance possible est analysée.</p></li>
+        <li style="--i:3"><span class="steps__n"></span><h3>Le code</h3><p>Réglé et validé avant la finale.</p></li>
       </ol>
       <div class="goal" data-rv="t">
         <svg class="ring" viewBox="0 0 96 96" aria-hidden="true"><circle class="ring__bg" cx="48" cy="48" r="40"/><circle class="ring__fg" cx="48" cy="48" r="40" pathLength="100"/></svg>
@@ -641,25 +636,12 @@ footer a:hover{color:var(--gold)}
         <p class="lede">Cinq spécialités, une obsession.</p>
       </div>
       <ul class="crew">
-        <li data-rv="up" style="--i:0"><article class="card"><div class="card__disc"><span aria-hidden="true">LA</span><img src="equipe.jpg?v=1" alt="" width="1568" height="726" loading="lazy" decoding="async" style="--k:0"></div><p class="card__tag">Planification</p><h3 class="display card__name">Loaï Abu-Aita</h3><p class="card__role">Chef de projet agile</p><p class="card__txt">Planification, points d’avancement et suivi de l’équipe.</p></article></li>
-        <li data-rv="up" style="--i:1"><article class="card"><div class="card__disc"><span aria-hidden="true">ZA</span><img src="equipe.jpg?v=1" alt="" width="1568" height="726" loading="lazy" decoding="async" style="--k:1"></div><p class="card__tag">Mécanique</p><h3 class="display card__name">Zakariae Arroub</h3><p class="card__role">R&amp;D mécanique et robotique</p><p class="card__txt">Conception mécanique du rover, de l’exigence à la pièce.</p></article></li>
-        <li data-rv="up" style="--i:2"><article class="card"><div class="card__disc"><span aria-hidden="true">NB</span><img src="equipe.jpg?v=1" alt="" width="1568" height="726" loading="lazy" decoding="async" style="--k:2"></div><p class="card__tag">Logiciel</p><h3 class="display card__name">Nermine Badis</h3><p class="card__role">R&amp;D logiciel SCADE</p><p class="card__txt">Modélisation SCADE, machines à états et simulation.</p></article></li>
-        <li data-rv="up" style="--i:3"><article class="card"><div class="card__disc"><span aria-hidden="true">AB</span><img src="equipe.jpg?v=1" alt="" width="1568" height="726" loading="lazy" decoding="async" style="--k:3"></div><p class="card__tag">Essais</p><h3 class="display card__name">Anass Bahraoui</h3><p class="card__role">R&amp;D fiabilité et essais</p><p class="card__txt">Plans de tests, AMDEC et essais répétés.</p></article></li>
-        <li data-rv="up" style="--i:4"><article class="card"><div class="card__disc"><span aria-hidden="true">IA</span><img src="equipe.jpg?v=1" alt="" width="1568" height="726" loading="lazy" decoding="async" style="--k:4"></div><p class="card__tag">Communication</p><h3 class="display card__name">Imane Ahmany</h3><p class="card__role">Marketing, réseaux et stratégie</p><p class="card__txt">Communication, stratégie digitale et valorisation du projet auprès des partenaires.</p></article></li>
+        <li data-rv="up" style="--i:0"><article class="card"><div class="card__disc"><span aria-hidden="true">LA</span><img src="equipe.jpg?v=1" alt="" width="1568" height="726" loading="lazy" decoding="async" style="--k:0"></div><p class="card__tag">Planification</p><h3 class="display card__name">Loaï Abu-Aita</h3><p class="card__role">Chef de projet agile</p></article></li>
+        <li data-rv="up" style="--i:1"><article class="card"><div class="card__disc"><span aria-hidden="true">ZA</span><img src="equipe.jpg?v=1" alt="" width="1568" height="726" loading="lazy" decoding="async" style="--k:1"></div><p class="card__tag">Mécanique</p><h3 class="display card__name">Zakariae Arroub</h3><p class="card__role">R&amp;D mécanique et robotique</p></article></li>
+        <li data-rv="up" style="--i:2"><article class="card"><div class="card__disc"><span aria-hidden="true">NB</span><img src="equipe.jpg?v=1" alt="" width="1568" height="726" loading="lazy" decoding="async" style="--k:2"></div><p class="card__tag">Logiciel</p><h3 class="display card__name">Nermine Badis</h3><p class="card__role">R&amp;D logiciel SCADE</p></article></li>
+        <li data-rv="up" style="--i:3"><article class="card"><div class="card__disc"><span aria-hidden="true">AB</span><img src="equipe.jpg?v=1" alt="" width="1568" height="726" loading="lazy" decoding="async" style="--k:3"></div><p class="card__tag">Essais</p><h3 class="display card__name">Anass Bahraoui</h3><p class="card__role">R&amp;D fiabilité et essais</p></article></li>
+        <li data-rv="up" style="--i:4"><article class="card"><div class="card__disc"><span aria-hidden="true">IA</span><img src="equipe.jpg?v=1" alt="" width="1568" height="726" loading="lazy" decoding="async" style="--k:4"></div><p class="card__tag">Communication</p><h3 class="display card__name">Imane Ahmany</h3><p class="card__role">Marketing, réseaux et stratégie</p></article></li>
       </ul>
-    </div>
-  </section>
-
-  <section class="block glow-l" id="mascotte" aria-labelledby="t-mascotte">
-    <div class="wrap">
-      <div class="head" data-rv="up">
-        <h2 class="display" id="t-mascotte">La mascotte</h2>
-        <p class="lede">Le sixième membre de l’équipage. Demandez-lui de se présenter, de danser ou de faire une pirouette.</p>
-      </div>
-      <div class="mascot" data-rv="up">
-        <iframe src="mascotte.html" title="Mascotte ARRAKOR animée : un robot doré qui se présente, danse et lève le pouce" loading="lazy"></iframe>
-      </div>
-      <p class="mascot__more"><a href="mascotte.html">Ouvrir la mascotte en plein écran</a></p>
     </div>
   </section>
 
@@ -670,11 +652,11 @@ footer a:hover{color:var(--gold)}
         <p class="lede">De l’exigence au robot qui roule.</p>
       </div>
       <dl class="rows">
-        <div data-rv="up" style="--i:0"><dt>Concevoir</dt><dd>Mécanique, conception et robotique.</dd></div>
-        <div data-rv="up" style="--i:1"><dt>Modéliser</dt><dd>SCADE, machines à états, simulation et validation.</dd></div>
-        <div data-rv="up" style="--i:2"><dt>Valider</dt><dd>Plans de tests, AMDEC, qualité.</dd></div>
-        <div data-rv="up" style="--i:3"><dt>Industrialiser</dt><dd>Passer du prototype à un système fiable.</dd></div>
-        <div data-rv="up" style="--i:4"><dt>Piloter</dt><dd>Gestion de projet Agile, planification et suivi.</dd></div>
+        <div data-rv="up" style="--i:0"><dt>Concevoir</dt><dd>Mécanique et robotique.</dd></div>
+        <div data-rv="up" style="--i:1"><dt>Modéliser</dt><dd>SCADE et simulation.</dd></div>
+        <div data-rv="up" style="--i:2"><dt>Valider</dt><dd>Tests et AMDEC.</dd></div>
+        <div data-rv="up" style="--i:3"><dt>Industrialiser</dt><dd>Du prototype au système fiable.</dd></div>
+        <div data-rv="up" style="--i:4"><dt>Piloter</dt><dd>Projet agile et suivi.</dd></div>
       </dl>
     </div>
   </section>
@@ -683,15 +665,15 @@ footer a:hover{color:var(--gold)}
     <div class="wrap">
       <div class="head" data-rv="up">
         <h2 class="display" id="t-univers">L’univers ARRAKOR</h2>
-        <p class="lede">Un désert noir, une planète orange, un rover doré. Six couleurs, pas une de plus.</p>
+        <p class="lede">Six couleurs, pas une de plus.</p>
       </div>
       <ul class="swatches">
-        <li data-rv="up" style="--i:0;--c:#0d0b08"><i></i><b>Nuit</b><span>#0D0B08</span><em>Le désert la nuit</em></li>
-        <li data-rv="up" style="--i:1;--c:#612c1e"><i></i><b>Braise</b><span>#612C1E</span><em>Le ciel derrière la planète</em></li>
-        <li data-rv="up" style="--i:2;--c:#dc8a3e"><i></i><b>Épice</b><span>#DC8A3E</span><em>La planète</em></li>
-        <li data-rv="up" style="--i:3;--c:#ff9a1f"><i></i><b>Ambre</b><span>#FF9A1F</span><em>Les LED du rover</em></li>
-        <li data-rv="up" style="--i:4;--c:#f2b641"><i></i><b>Or</b><span>#F2B641</span><em>Le nom et les chiffres</em></li>
-        <li data-rv="up" style="--i:5;--c:#f6efe2"><i></i><b>Sable</b><span>#F6EFE2</span><em>Les dunes au soleil</em></li>
+        <li data-rv="up" style="--i:0;--c:#0d0b08"><i></i><b>Nuit</b><span>#0D0B08</span></li>
+        <li data-rv="up" style="--i:1;--c:#612c1e"><i></i><b>Braise</b><span>#612C1E</span></li>
+        <li data-rv="up" style="--i:2;--c:#dc8a3e"><i></i><b>Épice</b><span>#DC8A3E</span></li>
+        <li data-rv="up" style="--i:3;--c:#ff9a1f"><i></i><b>Ambre</b><span>#FF9A1F</span></li>
+        <li data-rv="up" style="--i:4;--c:#f2b641"><i></i><b>Or</b><span>#F2B641</span></li>
+        <li data-rv="up" style="--i:5;--c:#f6efe2"><i></i><b>Sable</b><span>#F6EFE2</span></li>
       </ul>
     </div>
   </section>
@@ -706,10 +688,7 @@ footer a:hover{color:var(--gold)}
         <div data-rv="up">
           <p class="display when__date">14 – 18 décembre 2026</p>
           <p class="when__place">Polytech Angers</p>
-          <p class="when__txt">Le Game of Robots est le challenge de robotique de Polytech Angers, mené avec ses partenaires Ansys / ADDL, Onepoint et Thales. En une semaine, chaque équipe conçoit et réalise son robot, puis les machines s’affrontent.</p>
-          <ul class="chips" aria-label="Ce que le challenge met à l’épreuve">
-            <li>Ingénierie des exigences</li><li>Modélisation SCADE</li><li>Gestion de projet agile</li><li>Mécanique</li><li>Validation et essais</li><li>Marketing</li>
-          </ul>
+          <p class="when__txt">Une semaine pour concevoir et réaliser un robot, puis les machines s’affrontent.</p>
         </div>
         <div class="tl" id="tl" data-rv="t" aria-hidden="true">
           <span class="tl__now" id="tl-now"></span>
@@ -717,9 +696,9 @@ footer a:hover{color:var(--gold)}
           <div class="tl__ends"><span>9 nov. · pitch de lancement</span><span>14 – 18 déc. · challenge</span></div>
         </div>
         <ul class="dates" data-rv="up">
-          <li><time datetime="2026-11-09">9 novembre 2026</time><span>Pitch de lancement de l’équipe</span></li>
+          <li><time datetime="2026-11-09">9 novembre 2026</time><span>Pitch de lancement</span></li>
           <li><time datetime="2026-12-14">14 décembre 2026</time><span>Début du challenge</span></li>
-          <li><time datetime="2026-12-18">18 décembre 2026</time><span>Dernier jour du challenge</span></li>
+          <li><time datetime="2026-12-18">18 décembre 2026</time><span>Dernier jour</span></li>
         </ul>
       </div>
     </div>
@@ -730,32 +709,17 @@ footer a:hover{color:var(--gold)}
     <div class="wrap">
       <div class="head" data-rv="up">
         <h2 class="display" id="t-part">Nos partenaires</h2>
-        <p class="lede">Le challenge existe grâce à eux. Merci de croire en nous.</p>
+        <p class="lede">Merci de croire en nous.</p>
       </div>
       <ul class="pgrid">
-        <li data-rv="up" style="--i:0"><div class="plaque"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ansys_logo_(2019).svg" alt="Ansys" loading="lazy" decoding="async" referrerpolicy="no-referrer"><span>L’éditeur de SCADE, l’outil qui sert à modéliser le comportement du robot.</span></div></li>
-        <li data-rv="up" style="--i:1"><div class="plaque"><img src="https://www.addl.fr/build/assets/images/addl.ccdf0cee.webp" alt="ADDL" loading="lazy" decoding="async" referrerpolicy="no-referrer"><span>Partenaire Ansys : ingénierie des exigences et simulation.</span></div></li>
-        <li data-rv="up" style="--i:2"><div class="plaque"><img src="https://www.groupeonepoint.com/wp-content/themes/onepoint/Logo_Onepoint_fonce.png" alt="Onepoint" loading="lazy" decoding="async" referrerpolicy="no-referrer"><span>Partenaire du challenge.</span></div></li>
-        <li data-rv="up" style="--i:3"><div class="plaque"><img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Thales_Logo.svg" alt="Thales" loading="lazy" decoding="async" referrerpolicy="no-referrer"><span>Partenaire du challenge.</span></div></li>
-        <li data-rv="up" style="--i:4"><div class="plaque"><img src="https://polytech-angers.fr/skins/polytech/resources/img/svg/polytech_LogoPoytechhorizontal.svg" alt="Polytech Angers" loading="lazy" decoding="async" referrerpolicy="no-referrer"><span>L’école d’ingénieurs qui organise le Game of Robots.</span></div></li>
+        <li data-rv="up" style="--i:0"><div class="plaque"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ansys_logo_(2019).svg" alt="Ansys" loading="lazy" decoding="async" referrerpolicy="no-referrer"><span>Éditeur de SCADE</span></div></li>
+        <li data-rv="up" style="--i:1"><div class="plaque"><img src="https://www.addl.fr/build/assets/images/addl.ccdf0cee.webp" alt="ADDL" loading="lazy" decoding="async" referrerpolicy="no-referrer"><span>Exigences et simulation</span></div></li>
+        <li data-rv="up" style="--i:2"><div class="plaque"><img src="https://www.groupeonepoint.com/wp-content/themes/onepoint/Logo_Onepoint_fonce.png" alt="Onepoint" loading="lazy" decoding="async" referrerpolicy="no-referrer"><span>Partenaire du challenge</span></div></li>
+        <li data-rv="up" style="--i:3"><div class="plaque"><img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Thales_Logo.svg" alt="Thales" loading="lazy" decoding="async" referrerpolicy="no-referrer"><span>Partenaire du challenge</span></div></li>
+        <li data-rv="up" style="--i:4"><div class="plaque"><img src="https://polytech-angers.fr/skins/polytech/resources/img/svg/polytech_LogoPoytechhorizontal.svg" alt="Polytech Angers" loading="lazy" decoding="async" referrerpolicy="no-referrer"><span>École organisatrice</span></div></li>
       </ul>
     </div>
     <svg class="dune-div dune-div--bot" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0 60C240 8 520 96 780 46S1240 6 1440 52V120H0Z" fill="#dc8a3e"/><path d="M0 84C240 34 520 114 780 70S1240 32 1440 76V120H0Z" fill="#0d0b08"/></svg>
-  </section>
-
-  <section class="block" id="faq" aria-labelledby="t-faq">
-    <div class="wrap split">
-      <div class="head" data-rv="up">
-        <h2 class="display" id="t-faq">Questions fréquentes</h2>
-      </div>
-      <div class="faq">
-        <details data-rv="up" style="--i:0"><summary>C’est quoi, le Game of Robots ?</summary><p>Le challenge de robotique de Polytech Angers. En une semaine, chaque équipe conçoit et réalise un robot, puis les machines s’affrontent.</p></details>
-        <details data-rv="up" style="--i:1"><summary>Quand a lieu le challenge ?</summary><p>Du 14 au 18 décembre 2026, à Polytech Angers. 13 équipes sont en lice.</p></details>
-        <details data-rv="up" style="--i:2"><summary>Qui est derrière ARRAKOR ?</summary><p>Cinq coéquipiers aux spécialités complémentaires : gestion de projet, mécanique, logiciel, fiabilité et communication.</p></details>
-        <details data-rv="up" style="--i:3"><summary>Quel est l’objectif de l’équipe ?</summary><p>Un parcours réussi, sans collision et sans blocage, avec au moins 90 % de réussite aux essais.</p></details>
-        <details data-rv="up" style="--i:4"><summary>Comment suivre l’équipe ?</summary><p>Abonnez-vous à @arra_kor sur Instagram et partagez cette page autour de vous.</p></details>
-      </div>
-    </div>
   </section>
 
   <section class="end" aria-labelledby="t-end">
@@ -1115,6 +1079,21 @@ footer a:hover{color:var(--gold)}
     function drop(){ if (im.parentNode) im.parentNode.removeChild(im); }
     if (im.complete && !im.naturalWidth && im.currentSrc) drop(); else im.addEventListener("error", drop);
   });
+
+  /* Visite guidée : le bouton de l'accueil amène à la mascotte, puis lui demande de lancer la visite */
+  var tourBtn = $("#tour-btn"), mascot = $(".mascot iframe");
+  if (tourBtn && mascot){
+    var tourTimer = null, tourOrigin = /^https?:/.test(location.origin) ? location.origin : "*";
+    window.addEventListener("message", function(e){ if (e.source === mascot.contentWindow && e.data === "arrakor:ok") clearInterval(tourTimer); });
+    tourBtn.addEventListener("click", function(){
+      var n = 0;
+      clearInterval(tourTimer);
+      tourTimer = setInterval(function(){        /* on répète jusqu'à ce que la mascotte réponde, 6 s au plus */
+        if (++n > 12) return clearInterval(tourTimer);
+        try { mascot.contentWindow.postMessage("arrakor:visite", tourOrigin); } catch (err) {}
+      }, 500);
+    });
+  }
 
   /* Partage de la page */
   var sh = $("#share");
