@@ -1085,8 +1085,10 @@ footer a:hover{color:var(--gold)}
   if (tourBtn && mascot){
     var tourTimer = null, tourOrigin = /^https?:/.test(location.origin) ? location.origin : "*";
     window.addEventListener("message", function(e){ if (e.source === mascot.contentWindow && e.data === "arrakor:ok") clearInterval(tourTimer); });
-    tourBtn.addEventListener("click", function(){
+    tourBtn.addEventListener("click", function(e){
       var n = 0;
+      e.preventDefault();                        /* on cadre la mascotte elle-même, pas le titre de sa section */
+      mascot.scrollIntoView({ block: "center" });
       clearInterval(tourTimer);
       tourTimer = setInterval(function(){        /* on répète jusqu'à ce que la mascotte réponde, 6 s au plus */
         if (++n > 12) return clearInterval(tourTimer);
