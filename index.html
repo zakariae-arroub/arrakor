@@ -276,7 +276,10 @@ section{scroll-margin-top:72px}
 .card::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(115deg,transparent 36%,rgba(255,214,140,.17) 50%,transparent 64%);transform:translateX(-130%);transition:transform .9s ease}
 .card:hover{background:var(--gold)}
 .card:hover::after{transform:translateX(130%)}
-.card__disc{display:grid;place-items:center;width:76px;height:76px;border-radius:50%;background:radial-gradient(120% 90% at 50% 0%,#dc8a3e 0%,#8a4420 40%,#2a140c 80%);box-shadow:0 -1px 0 rgba(255,224,160,.9),0 -8px 26px -6px rgba(255,170,70,.75);font-family:var(--display);font-size:1.05rem;letter-spacing:.06em;color:#ffe7ae}
+.card__disc{position:relative;display:grid;place-items:center;width:104px;height:104px;border-radius:50%;overflow:hidden;background:radial-gradient(120% 90% at 50% 0%,#dc8a3e 0%,#8a4420 40%,#2a140c 80%);box-shadow:0 0 0 1px rgba(242,182,65,.8),0 0 0 5px rgba(242,182,65,.1),0 -10px 30px -6px rgba(255,170,70,.7);font-family:var(--display);font-size:1.3rem;letter-spacing:.06em;color:#ffe7ae;transition:box-shadow .4s ease}
+.card__disc img{position:absolute;top:-2%;left:calc(var(--k)*-104% - 2%);width:520%;max-width:none;height:auto;transform-origin:calc(var(--k)*20% + 10%) 21.6%;transition:transform .6s var(--ease)}
+.card:hover .card__disc{box-shadow:0 0 0 1px var(--gold),0 0 0 5px rgba(242,182,65,.22),0 -10px 34px -4px rgba(255,170,70,.9)}
+.card:hover .card__disc img{transform:scale(1.08)}
 .card__tag{margin-top:20px;font:500 .78rem/1.2 var(--mono);color:var(--ink-muted)}
 .card__name{margin-top:8px;min-height:2.7em;font-size:.98rem;line-height:1.35;color:var(--gold)}
 .card__role{margin-top:8px;font-weight:600;font-size:.98rem;line-height:1.35}
@@ -631,11 +634,11 @@ footer a:hover{color:var(--gold)}
         <p class="lede">Cinq spécialités, une obsession.</p>
       </div>
       <ul class="crew">
-        <li data-rv="up" style="--i:0"><article class="card"><div class="card__disc" aria-hidden="true">LA</div><p class="card__tag">Planification</p><h3 class="display card__name">Loaï Abu-Aita</h3><p class="card__role">Chef de projet agile</p><p class="card__txt">Planification, points d’avancement et suivi de l’équipe.</p></article></li>
-        <li data-rv="up" style="--i:1"><article class="card"><div class="card__disc" aria-hidden="true">ZA</div><p class="card__tag">Mécanique</p><h3 class="display card__name">Zakariae Arroub</h3><p class="card__role">R&amp;D mécanique et robotique</p><p class="card__txt">Conception mécanique du rover, de l’exigence à la pièce.</p></article></li>
-        <li data-rv="up" style="--i:2"><article class="card"><div class="card__disc" aria-hidden="true">NB</div><p class="card__tag">Logiciel</p><h3 class="display card__name">Nermine Badis</h3><p class="card__role">R&amp;D logiciel SCADE</p><p class="card__txt">Modélisation SCADE, machines à états et simulation.</p></article></li>
-        <li data-rv="up" style="--i:3"><article class="card"><div class="card__disc" aria-hidden="true">AB</div><p class="card__tag">Essais</p><h3 class="display card__name">Anass Bahraoui</h3><p class="card__role">R&amp;D fiabilité et essais</p><p class="card__txt">Plans de tests, AMDEC et essais répétés.</p></article></li>
-        <li data-rv="up" style="--i:4"><article class="card"><div class="card__disc" aria-hidden="true">IA</div><p class="card__tag">Communication</p><h3 class="display card__name">Imane Ahmany</h3><p class="card__role">Marketing, réseaux et stratégie</p><p class="card__txt">Communication, stratégie digitale et valorisation du projet auprès des partenaires.</p></article></li>
+        <li data-rv="up" style="--i:0"><article class="card"><div class="card__disc"><span aria-hidden="true">LA</span><img src="equipe.jpg?v=1" alt="" width="1568" height="726" loading="lazy" decoding="async" style="--k:0"></div><p class="card__tag">Planification</p><h3 class="display card__name">Loaï Abu-Aita</h3><p class="card__role">Chef de projet agile</p><p class="card__txt">Planification, points d’avancement et suivi de l’équipe.</p></article></li>
+        <li data-rv="up" style="--i:1"><article class="card"><div class="card__disc"><span aria-hidden="true">ZA</span><img src="equipe.jpg?v=1" alt="" width="1568" height="726" loading="lazy" decoding="async" style="--k:1"></div><p class="card__tag">Mécanique</p><h3 class="display card__name">Zakariae Arroub</h3><p class="card__role">R&amp;D mécanique et robotique</p><p class="card__txt">Conception mécanique du rover, de l’exigence à la pièce.</p></article></li>
+        <li data-rv="up" style="--i:2"><article class="card"><div class="card__disc"><span aria-hidden="true">NB</span><img src="equipe.jpg?v=1" alt="" width="1568" height="726" loading="lazy" decoding="async" style="--k:2"></div><p class="card__tag">Logiciel</p><h3 class="display card__name">Nermine Badis</h3><p class="card__role">R&amp;D logiciel SCADE</p><p class="card__txt">Modélisation SCADE, machines à états et simulation.</p></article></li>
+        <li data-rv="up" style="--i:3"><article class="card"><div class="card__disc"><span aria-hidden="true">AB</span><img src="equipe.jpg?v=1" alt="" width="1568" height="726" loading="lazy" decoding="async" style="--k:3"></div><p class="card__tag">Essais</p><h3 class="display card__name">Anass Bahraoui</h3><p class="card__role">R&amp;D fiabilité et essais</p><p class="card__txt">Plans de tests, AMDEC et essais répétés.</p></article></li>
+        <li data-rv="up" style="--i:4"><article class="card"><div class="card__disc"><span aria-hidden="true">IA</span><img src="equipe.jpg?v=1" alt="" width="1568" height="726" loading="lazy" decoding="async" style="--k:4"></div><p class="card__tag">Communication</p><h3 class="display card__name">Imane Ahmany</h3><p class="card__role">Marketing, réseaux et stratégie</p><p class="card__txt">Communication, stratégie digitale et valorisation du projet auprès des partenaires.</p></article></li>
       </ul>
     </div>
   </section>
@@ -1085,6 +1088,12 @@ footer a:hover{color:var(--gold)}
   $$(".plaque img").forEach(function(im){
     function swap(){ var b = d.createElement("b"); b.textContent = im.alt; if (im.parentNode) im.parentNode.replaceChild(b, im); }
     if (im.complete && !im.naturalWidth && im.currentSrc) swap(); else im.addEventListener("error", swap);
+  });
+
+  /* Équipage : si les portraits ne chargent pas, les initiales restent visibles */
+  $$(".card__disc img").forEach(function(im){
+    function drop(){ if (im.parentNode) im.parentNode.removeChild(im); }
+    if (im.complete && !im.naturalWidth && im.currentSrc) drop(); else im.addEventListener("error", drop);
   });
 
   /* Partage de la page */
