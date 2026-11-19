@@ -759,6 +759,9 @@ body{
     pickVoice();
     if (synth.addEventListener) synth.addEventListener('voiceschanged', pickVoice);
   }
+  /* Ce qui s'écrit d'une façon et se dit d'une autre. L'écrit ne change jamais : seule la voix est guidée. */
+  const DICTION = [[/ARRAKOR/gi, 'Aracor'], [/&/g, ' et ']];
+  const spoken = text => DICTION.reduce((out, pair) => out.replace(pair[0], pair[1]), text);
   const hasVoice = () => sound.on && !!synth && !!sound.voice;
   const voiceBusy = () => {
     const now = performance.now();
@@ -784,7 +787,7 @@ body{
     sound.until = sound.t0 + (text.length / 10 + 4) * 1000;            /* garde-fou si la fin n'est jamais signalée */
     sound.timer = setTimeout(() => {
       if (id !== sound.token) return;
-      const v = sound.voice, u = new SpeechSynthesisUtterance(text.replace(/&/g, ' et '));
+      const v = sound.voice, u = new SpeechSynthesisUtterance(spoken(text));
       const natural = /natural|neural|premium|enhanced/i.test(v.name);
       let started = false;
       u.voice = v; u.lang = v.lang; u.volume = 1;
