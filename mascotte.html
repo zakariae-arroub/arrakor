@@ -229,7 +229,7 @@ body{
 .chip-quiet:hover{background:rgba(66,40,16,.5);border-color:rgba(253,233,180,.4)}
 .chip-home{position:absolute;top:14px;left:16px;z-index:4;font-size:.84rem;padding:.6em 1em;text-decoration:none}
 /* Affichée dans la page du site : pas de lien retour, et le doigt peut faire défiler la page */
-.embed .chip-home{display:none}
+.embed .chip-home,.embed #btn-voice,.chip[hidden]{display:none}
 .embed #robot{touch-action:pan-y}
 .hint{
   margin:0;max-width:46ch;
@@ -592,6 +592,7 @@ body{
       <button class="chip" type="button" data-act="sleep" id="btn-sleep" aria-pressed="false">Dodo</button>
       <button class="chip chip-quiet" type="button" id="btn-pause" aria-pressed="false">Pause</button>
       <button class="chip chip-quiet" type="button" id="btn-sound">Couper le son</button>
+      <button class="chip chip-quiet" type="button" id="btn-voice" hidden>Changer de voix</button>
     </div>
     <p class="hint">Touchez le robot pour un pouce levé. Caressez son casque pour le faire rougir.</p>
   </div>
@@ -640,7 +641,7 @@ body{
   const dust = $('dust'), embersC = $('embers');
   const dctx = dust.getContext('2d'), ectx = embersC.getContext('2d');
   const bubble = $('bubble'), said = bubble.querySelector('.on'), unsaid = bubble.querySelector('.off'), live = $('live');
-  const btnPause = $('btn-pause'), btnSleep = $('btn-sleep'), btnSound = $('btn-sound');
+  const btnPause = $('btn-pause'), btnSleep = $('btn-sleep'), btnSound = $('btn-sound'), btnVoice = $('btn-voice');
   const dk = {
     root: $('deck'), card: $('deck-card'), slide: $('deck-slide'), ava: $('deck-ava'),
     tag: $('deck-tag'), name: $('deck-name'), role: $('deck-role'), txt: $('deck-txt'), count: $('deck-count'),
@@ -728,18 +729,32 @@ body{
   let nextBlink = 2, blinkEnd = 0, nextIdle = 7, nextHeart = 0, nextNote = 0, nextZ = 0, nextPetHeart = 0;
 
   /* ==========================================================================
-     Son : la voix du robot est la synthèse vocale du navigateur, en français et
-     plus aiguë que la normale. Sans voix française, de petits bips suivent le
-     texte. Rien ne se fait entendre avant un clic ou une touche.
+     Son : la voix du robot est la synthèse vocale du navigateur, en français.
+     On prend la voix la plus naturelle de l'appareil, à hauteur et vitesse
+     presque normales, pour qu'elle reste douce et nette. Sans voix française,
+     de petits bips suivent le texte. Rien ne se fait entendre avant un clic.
      ========================================================================== */
   const synth = 'speechSynthesis' in window ? window.speechSynthesis : null;
-  const sound = { on: true, ctx: null, voice: null, busy: false, token: 0, t0: 0, until: 0, phrase: null };
-  try { sound.on = localStorage.getItem('arrakor-son') !== 'non'; } catch (e) { /* stockage indisponible */ }
+  const sound = { on: true, ctx: null, out: null, voice: null, voices: [], bad: {}, wanted: '',
+    busy: false, token: 0, t0: 0, until: 0, phrase: null, timer: 0, cutAt: -1e9, quietUntil: 0 };
+  try {
+    sound.on = localStorage.getItem('arrakor-son') !== 'non';
+    sound.wanted = localStorage.getItem('arrakor-voix') || '';
+  } catch (e) { /* stockage indisponible */ }
 
-  function pickVoice() {
-    const fr = synth.getVoices().filter(v => /^fr/i.test(v.lang));
-    sound.voice = fr.find(v => /google/i.test(v.name)) || fr.find(v => /^fr[-_]FR/i.test(v.lang)) || fr[0] || null;
+  /* Les voix « naturelles » passent devant, puis celles de Google, puis celles du système */
+  function voiceScore(v) {
+    const n = v.name;
+    return (/natural|neural/i.test(n) ? 6 : 0) + (/premium|enhanced|siri/i.test(n) ? 5 : 0) + (/google/i.test(n) ? 3 : 0)
+      + (/chrome os/i.test(n) ? 2 : 0) + (/^fr[-_]FR/i.test(v.lang) ? 1 : 0) + (v.default ? .5 : 0) - (/compact|espeak/i.test(n) ? 3 : 0);
   }
+  function pickVoice() {
+    sound.voices = synth.getVoices().filter(v => /^fr/i.test(v.lang) && !sound.bad[v.name])
+      .sort((a, b) => voiceScore(b) - voiceScore(a));
+    sound.voice = sound.voices.find(v => v.name === sound.wanted) || sound.voices[0] || null;
+    btnVoice.hidden = sound.voices.length < 2;
+  }
+  function dropVoice(v) { sound.bad[v.name] = true; pickVoice(); }
   if (synth) {
     pickVoice();
     if (synth.addEventListener) synth.addEventListener('voiceschanged', pickVoice);
@@ -747,59 +762,98 @@ body{
   const hasVoice = () => sound.on && !!synth && !!sound.voice;
   const voiceBusy = () => {
     const now = performance.now();
-    return sound.busy && now < sound.until && (now - sound.t0 < 900 || synth.speaking || synth.pending);
+    return sound.busy && now < sound.until && (now - sound.t0 < 1200 || synth.speaking || synth.pending);
   };
 
   function stopVoice() {
     sound.token++; sound.busy = false;
-    if (synth) { try { synth.cancel(); } catch (e) { /* rien à couper */ } }
+    clearTimeout(sound.timer);
+    if (synth && (synth.speaking || synth.pending)) {
+      try { synth.cancel(); } catch (e) { /* rien à couper */ }
+      sound.cutAt = performance.now();
+    }
   }
-  function speak(text) {
+  function speak(text, again) {
     stopVoice();
     if (!hasVoice()) return;
-    const u = new SpeechSynthesisUtterance(text.replace(/&/g, ' et '));
-    const id = sound.token;
-    const done = () => { if (id === sound.token) sound.busy = false; };
-    u.voice = sound.voice; u.lang = sound.voice.lang;
-    u.pitch = 1.6; u.rate = 1.06; u.volume = 1;
-    u.onend = done; u.onerror = done;
-    sound.busy = true; sound.phrase = u;                   /* la référence évite que la phrase soit oubliée en route */
-    sound.t0 = performance.now();
-    sound.until = sound.t0 + (text.length / 11 + 3) * 1000;            /* garde-fou si la fin n'est jamais signalée */
-    try { synth.resume(); synth.speak(u); } catch (e) { sound.busy = false; }
+    const id = sound.token, now = performance.now();
+    /* un court silence avant de parler : la phrase précédente et les petits sons ont le temps de s'éteindre */
+    const wait = Math.max(again ? 160 : 40, sound.cutAt + 140 - now, sound.quietUntil - now);
+    sound.busy = true;
+    sound.t0 = now + wait;
+    sound.until = sound.t0 + (text.length / 10 + 4) * 1000;            /* garde-fou si la fin n'est jamais signalée */
+    sound.timer = setTimeout(() => {
+      if (id !== sound.token) return;
+      const v = sound.voice, u = new SpeechSynthesisUtterance(text.replace(/&/g, ' et '));
+      const natural = /natural|neural|premium|enhanced/i.test(v.name);
+      let started = false;
+      u.voice = v; u.lang = v.lang; u.volume = 1;
+      u.pitch = natural ? 1.06 : 1.1;                      /* à peine plus haut que la normale : petit robot, mais net */
+      u.rate = natural ? .98 : .94;
+      u.onstart = () => { started = true; };
+      u.onend = () => { if (id === sound.token) sound.busy = false; };
+      u.onerror = e => {
+        if (id !== sound.token) return;                    /* coupée par nous : rien à faire */
+        if (started || again) { sound.busy = false; return; }
+        if (e.error !== 'interrupted' && e.error !== 'canceled') dropVoice(v);
+        speak(text, true);                                 /* un second essai, avec la voix suivante si celle-ci est en cause */
+      };
+      sound.phrase = u;                                    /* la référence évite que la phrase soit oubliée en route */
+      try { synth.resume(); synth.speak(u); } catch (e) { sound.busy = false; }
+      /* une voix qui n'a pas démarré au bout de 2,5 s est écartée, et la phrase repart avec la suivante */
+      sound.timer = setTimeout(() => { if (id === sound.token && !started && !again) { dropVoice(v); speak(text, true); } }, 2500);
+    }, wait);
   }
 
   function unlock() {                                      /* à appeler sur un clic ou une touche */
     if (!sound.on) return;
     try {
       const AC = window.AudioContext || window.webkitAudioContext;
-      if (!sound.ctx && AC) sound.ctx = new AC();
+      if (!sound.ctx && AC) {
+        sound.ctx = new AC();
+        const soft = sound.ctx.createBiquadFilter();       /* adoucit les aigus des petits sons */
+        soft.type = 'lowpass'; soft.frequency.value = 3200;
+        sound.out = sound.ctx.createGain(); sound.out.gain.value = .9;
+        sound.out.connect(soft); soft.connect(sound.ctx.destination);
+      }
       if (sound.ctx && sound.ctx.state === 'suspended') sound.ctx.resume();
     } catch (e) { /* pas d'audio : la mascotte reste muette */ }
   }
-  function tone(freq, dur, type, vol, slide, delay) {
+  function tone(freq, dur, vol, slide, delay) {            /* une note ronde : attaque et extinction progressives */
     const ac = sound.ctx;
-    if (!sound.on || !ac || ac.state !== 'running') return;
+    if (!sound.on || !ac || !sound.out || ac.state !== 'running') return;
     const o = ac.createOscillator(), g = ac.createGain(), t0 = ac.currentTime + (delay || 0);
-    o.type = type;
+    o.type = 'sine';
     o.frequency.setValueAtTime(freq, t0);
-    if (slide) o.frequency.exponentialRampToValueAtTime(slide, t0 + dur);
-    g.gain.setValueAtTime(0, t0);
-    g.gain.linearRampToValueAtTime(vol, t0 + .012);
+    if (slide) o.frequency.exponentialRampToValueAtTime(slide, t0 + dur * .8);
+    g.gain.setValueAtTime(.0001, t0);
+    g.gain.exponentialRampToValueAtTime(vol, t0 + .03);
     g.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
-    o.connect(g); g.connect(ac.destination);
-    o.start(t0); o.stop(t0 + dur + .03);
+    o.connect(g); g.connect(sound.out);
+    o.start(t0); o.stop(t0 + dur + .05);
+    /* la voix attend que la note soit presque éteinte, pour ne pas se mélanger à elle */
+    sound.quietUntil = Math.max(sound.quietUntil, performance.now() + ((delay || 0) + Math.min(dur, .3)) * 1000);
   }
   const sfx = {
-    chime() { tone(880, .22, 'sine', .07); tone(1318.5, .36, 'sine', .06, 0, .09); },
-    pop() { tone(320, .12, 'sine', .07, 640); },
-    blip(ch) { tone(520 + (ch.charCodeAt(0) % 9) * 42, .055, 'triangle', .045); }
+    chime() { tone(659.3, .5, .035); tone(987.8, .6, .03, 0, .1); },
+    pop() { tone(392, .16, .03, 523.3); },
+    blip(ch) { tone(440 + (ch.charCodeAt(0) % 7) * 36, .07, .022); }
   };
   function setSound(on) {
     sound.on = on;
     try { localStorage.setItem('arrakor-son', on ? 'oui' : 'non'); } catch (e) { /* stockage indisponible */ }
     btnSound.textContent = on ? 'Couper le son' : 'Activer le son';
     if (!on) stopVoice();
+  }
+  function nextVoice() {                                   /* passe à la voix française suivante et la fait entendre */
+    if (!synth || sound.voices.length < 2) return;
+    const i = (sound.voices.indexOf(sound.voice) + 1) % sound.voices.length;
+    sound.voice = sound.voices[i]; sound.wanted = sound.voice.name;
+    try { localStorage.setItem('arrakor-voix', sound.wanted); } catch (e) { /* stockage indisponible */ }
+    if (!sound.on) setSound(true);
+    unlock();
+    say('Voix ' + (i + 1) + ' sur ' + sound.voices.length + '. Bonjour, c’est moi !', 1.2);
+    start();
   }
 
   /* ---------- Bulle de texte ---------- */
@@ -841,7 +895,7 @@ body{
     if (!calm) {
       const n = Math.min(speech.text.length, Math.floor((t - speech.start) * CPS));
       if (n !== speech.shown) {
-        if (n > speech.shown && n % 2 === 0 && n > 0 && sound.on && !hasVoice() && speech.text[n - 1].trim()) sfx.blip(speech.text[n - 1]);
+        if (n > speech.shown && n % 3 === 0 && n > 0 && sound.on && !hasVoice() && speech.text[n - 1].trim()) sfx.blip(speech.text[n - 1]);
         speech.shown = n; said.textContent = speech.text.slice(0, n); unsaid.textContent = speech.text.slice(n);
       }
     }
@@ -1051,8 +1105,8 @@ body{
           a.i = next; a.s0 = t; a.heard = -9; a.cue = 0;
           a.min = st.say ? st.say.length / CPS + (hasVoice() ? .9 : 1.9) : st.dur;
           a.est = st.say ? Math.max(a.min, st.say.length / 14 + .8) : st.dur;
-          if (st.say) say(st.say, Infinity); else hideBubble();
           if (st.enter) st.enter(a);
+          if (st.say) say(st.say, Infinity); else hideBubble();
         }
         steps[a.i].pose(T, calm ? .5 : t - a.s0, a);
       },
@@ -1108,7 +1162,6 @@ body{
     dk.slide.classList.add('go');
     if (!first) dk.card.classList.add('flip');
     fitDeck();
-    if (speech.on) placeBubble();
     sfx.pop();
   }
   function closeDeck() { deckOpen = false; stage.classList.remove('is-deck'); }
@@ -1567,6 +1620,7 @@ body{
   chips.forEach(c => c.addEventListener('click', () => play(c.dataset.act)));
   btnPause.addEventListener('click', () => setPaused(!paused));
   btnSound.addEventListener('click', () => { setSound(!sound.on); unlock(); });
+  btnVoice.addEventListener('click', nextVoice);
   $('deck-prev').addEventListener('click', () => deckGo(-1));
   $('deck-next').addEventListener('click', () => deckGo(1));
   $('deck-close').addEventListener('click', () => { if (act && act.name === 'team') act.done = true; });
@@ -1574,6 +1628,7 @@ body{
   window.addEventListener('keydown', e => {
     if (deckOpen && e.key === 'Escape') { if (act) act.done = true; return; }
     if (deckOpen && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) { e.preventDefault(); deckGo(e.key === 'ArrowRight' ? 1 : -1); return; }
+    if (e.key === 'v' || e.key === 'V') { nextVoice(); return; }      /* V : essayer la voix suivante */
     if (e.target instanceof HTMLButtonElement) return;
     if (e.code === 'Space') { e.preventDefault(); play('cheer'); }
     const n = Number(e.key);
